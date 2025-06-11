@@ -2,8 +2,11 @@
 
 namespace FusionCammy.Core.Models
 {
-    public partial class CameraInfo(string name, int width, int height) : ObservableObject
+    public partial class CameraInfo(int index, string name, int width, int height) : ObservableObject
     {
+        [ObservableProperty]
+        private int index = index;
+
         [ObservableProperty]
         private string name = name;
 
