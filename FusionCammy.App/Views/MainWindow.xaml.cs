@@ -1,13 +1,6 @@
-﻿using System.Text;
+﻿using FusionCammy.App.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace FusionCammy.App.Views
 {
@@ -19,6 +12,9 @@ namespace FusionCammy.App.Views
         public MainWindow()
         {
             InitializeComponent();
+
+            var mainView = App.Services.GetRequiredService<MainView>();
+            MainFrame.Navigate(mainView);
         }
     }
 }

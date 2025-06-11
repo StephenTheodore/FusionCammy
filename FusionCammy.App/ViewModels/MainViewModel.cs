@@ -1,17 +1,12 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using FusionCammy.App.Utils;
 using FusionCammy.Core.Managers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Threading;
 
 namespace FusionCammy.App.ViewModels
 {
-    internal class MainViewModel : ObservableObject
+    public partial class MainViewModel : ObservableObject
     {
         private readonly CameraManager cameraManager;
 

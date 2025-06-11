@@ -1,4 +1,5 @@
 ﻿using FusionCammy.App.ViewModels;
+using FusionCammy.App.Views;
 using FusionCammy.Core.Managers;
 using FusionCammy.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,6 +27,7 @@ namespace FusionCammy.App
         private static void AddServices(IServiceCollection services)
         {
             #region ViewModels
+            services.AddSingleton<MainView>();
             services.AddSingleton<MainViewModel>();
             #endregion
 
