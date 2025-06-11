@@ -1,15 +1,22 @@
-﻿namespace FusionCammy.Core.Models
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+
+namespace FusionCammy.Core.Models
 {
-    public class CameraInfo(string name, int width, int height)
+    public partial class CameraInfo(string name, int width, int height) : ObservableObject
     {
-        public string Name { get; set; } = name;
+        [ObservableProperty]
+        private string name = name;
 
-        public bool IsOpened { get; set; }
+        [ObservableProperty]
+        private bool isOpened;
 
-        public bool IsStreaming { get; set; }
+        [ObservableProperty]
+        private bool isStreaming;
 
-        public int Width { get; set; } = width;
+        [ObservableProperty]
+        private int width = width;
 
-        public int Height { get; set; } = height;
+        [ObservableProperty]
+        private int height = height;
     }
 }

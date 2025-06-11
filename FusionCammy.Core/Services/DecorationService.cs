@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FusionCammy.Core.Decorations
+namespace FusionCammy.Core.Services
 {
-    internal class DecorationRudolphNose : DecorationBase
+    public class DecorationService
     {
     }
 }

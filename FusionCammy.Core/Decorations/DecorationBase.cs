@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FusionCammy.Core.Models;
 
 namespace FusionCammy.Core.Decorations
 {
-    internal abstract class DecorationBase : IDecoration
+    public abstract class DecorationBase(string id, DecorationColor color, VisualLayout visualLayout) : IDecoration
     {
+        public string Id { get; protected set; } = id;
+
+        public DecorationColor Color { get; protected set; } = color;
+
+        public VisualLayout VisualLayout { get; protected set; } = visualLayout;
+
+        public abstract void UpdateLayout(FaceInfo faceInfo);
     }
 }

@@ -2,9 +2,11 @@
 
 namespace FusionCammy.Core.Decorations
 {
-    internal interface IDecoration
+    public interface IDecoration
     {
-        DecorationInfo DecorationInfo { get; }
+        string Id { get; }
+
+        DecorationColor Color { get; }
 
         VisualLayout VisualLayout { get; }
 

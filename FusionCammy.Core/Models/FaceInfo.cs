@@ -1,25 +1,35 @@
-﻿using OpenCvSharp;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using OpenCvSharp;
 
 namespace FusionCammy.Core.Models
 {
-    public class FaceInfo
+    public partial class FaceInfo : ObservableObject
     {
-        public Rect Bounds { get; set; }
+        [ObservableProperty]
+        private Rect bounds;
 
-        public Point NosePosition { get; set; }
+        [ObservableProperty]
+        private Point nosePosition;
 
-        public Point MouthPosition { get; set; }
+        [ObservableProperty]
+        private Point mouthPosition;
 
-        public Point LeftEyePosition { get; set; }
+        [ObservableProperty]
+        private Point leftEyePosition;
 
-        public Point RightEyePosition { get; set; }
+        [ObservableProperty]
+        private Point rightEyePosition;
 
-        public Point LeftEarPosition { get; set; }
+        [ObservableProperty]
+        private Point leftEarPosition;
 
-        public Point RightEarPosition { get; set; }
+        [ObservableProperty]
+        private Point rightEarPosition;
 
-        public Point LeftCheekPosition { get; set; }
+        [ObservableProperty]
+        private Point leftCheekPosition;
 
-        public Point RightCheekPosition { get; set; }
+        [ObservableProperty]
+        private Point rightCheekPosition;
     }
 }

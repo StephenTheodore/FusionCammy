@@ -9,7 +9,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace FusionCammy.App
+namespace FusionCammy.App.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
