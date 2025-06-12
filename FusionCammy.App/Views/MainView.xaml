@@ -6,7 +6,7 @@
     xmlns:local="clr-namespace:FusionCammy.App.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:FusionCammy.App.ViewModels"
-    d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
+    d:DataContext="{d:DesignInstance Type=vm:CamViewModel}"
     Title="MainView"
     d:DesignHeight="480"
     d:DesignWidth="800"

@@ -13,8 +13,11 @@ namespace FusionCammy.App.Views
         {
             InitializeComponent();
 
-            var mainView = App.Services.GetRequiredService<MainView>();
-            MainFrame.Navigate(mainView);
+            var camView = App.Services.GetRequiredService<CamView>();
+            MainContentArea.Content = camView;
+
+            var decoSelectionView = App.Services.GetRequiredService<FunctionView>();
+            SideContentArea.Content = decoSelectionView;
         }
     }
 }

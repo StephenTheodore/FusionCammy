@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="FusionCammy.App.Views.CamView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FusionCammy.App.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="680" d:DesignWidth="940">
+    <Grid Background="#FF0A0A0A">
+
+        <!-- TODO : 바인딩 해줘야 -->
+        <Image x:Name="CamImage" Stretch="Uniform" Margin="10"/>
+
+        <!-- 아래쪽 버튼 -->
+        <Border VerticalAlignment="Bottom" 
+                HorizontalAlignment="Center"
+                Background="#AA1C1C1C" 
+                CornerRadius="8,8,0,0"
+                Margin="0,0,0,10"
+                Padding="20,10">
+            <StackPanel Orientation="Horizontal">
+                <Button x:Name="Button_StartCam" Content="📹 카메라 켜기" Style="{StaticResource FluentButtonStyle}" Margin="5"/>
+                <Button x:Name="Button_StopCam" Content="📷 카메라 끄기" Style="{StaticResource FluentButtonStyle}" Margin="5" IsEnabled="False"/>
+                <Button x:Name="Button_LoadImage" Content="📂 이미지 열기" Style="{StaticResource FluentButtonStyle}" Margin="15,5,5,5" />
+                <Button x:Name="Button_OpenDecoPanel" Content="🎨 필터" Style="{StaticResource FluentButtonStyle}" Margin="5"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

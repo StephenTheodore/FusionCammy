@@ -1,10 +1,15 @@
-﻿using OpenCvSharp;
+﻿using FusionCammy.Core.Decorations;
+using OpenCvSharp;
 
 namespace FusionCammy.Core.Managers
 {
     public partial class AssetManager
     {
         private readonly Dictionary<string, Mat> images = [];
+
+        public void Initialize()
+        {
+        }
 
         public void RegisterImage (string key, string imagePath)
         {

@@ -12,23 +12,28 @@ namespace FusionCammy.App
     /// </summary>
     public partial class App : Application
     {
-        public static IServiceProvider? Services { get; private set; }
+        public static IServiceProvider Services { get; private set; } = null!;
 
         protected override void OnStartup(StartupEventArgs e)
         {
             var serviceCollection = new ServiceCollection();
 
-            AddServices(serviceCollection);
-            Services = serviceCollection.BuildServiceProvider();
+            Services = BuildServiceProvider(serviceCollection);
+            InitializeEssentialComponents();
 
             base.OnStartup(e);
         }
 
-        private static void AddServices(IServiceCollection services)
+        private static ServiceProvider BuildServiceProvider(IServiceCollection services)
         {
-            #region ViewModels
+            #region Views & ViewModels
             services.AddSingleton<MainView>();
-            services.AddSingleton<MainViewModel>();
+
+            services.AddTransient<CamView>();
+            services.AddTransient<CamViewModel>();
+
+            services.AddTransient<FunctionView>();
+            services.AddTransient<FunctionViewModel>();
             #endregion
 
             #region Core.Managers
@@ -41,6 +46,20 @@ namespace FusionCammy.App
             services.AddSingleton<AcquisitionService>();
             services.AddSingleton<DecorationService>();
             #endregion
+
+            return services.BuildServiceProvider();
+        }
+
+        private void InitializeEssentialComponents()
+        {
+            var assetManager = Services.GetRequiredService<AssetManager>();
+            assetManager.Initialize();
+
+            var cameraManager = Services.GetRequiredService<CameraManager>();
+            cameraManager.Initialize();
+
+            var decorationManager = Services.GetRequiredService<DecorationManager>();
+            decorationManager.Initialize();
         }
     }
 }

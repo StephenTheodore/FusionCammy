@@ -7,6 +7,8 @@ namespace FusionCammy.Core.Managers
     {
         ObservableCollection<IDecoration> Decorations { get; } = [];
 
-
+        public void Initialize()
+        {
+        }
     }
 }

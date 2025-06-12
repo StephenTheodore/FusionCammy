@@ -6,7 +6,7 @@ using System.Windows.Threading;
 
 namespace FusionCammy.App.ViewModels
 {
-    public partial class MainViewModel : ObservableObject
+    public partial class CamViewModel : ObservableObject
     {
         private readonly CameraManager cameraManager;
 
@@ -15,7 +15,7 @@ namespace FusionCammy.App.ViewModels
         [ObservableProperty]
         private ImageSource imageSource;
 
-        public MainViewModel(CameraManager cameraManager)
+        public CamViewModel(CameraManager cameraManager)
         {
             this.cameraManager = cameraManager;
 

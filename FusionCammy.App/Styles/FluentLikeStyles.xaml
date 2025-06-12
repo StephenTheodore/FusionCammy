@@ -1,0 +1,113 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Style x:Key="FluentButtonStyle" TargetType="Button">
+        <Setter Property="Background" Value="#33FFFFFF" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="border" 
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="4"
+                            SnapsToDevicePixels="True">
+                        <Grid>
+                            <Border x:Name="Shine" Background="White" Opacity="0" CornerRadius="4"/>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#4CFFFFFF" TargetName="border" />
+                            <Trigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="Shine" Storyboard.TargetProperty="Opacity" To="0.1" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.EnterActions>
+                            <Trigger.ExitActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="Shine" Storyboard.TargetProperty="Opacity" To="0" Duration="0:0:0.2"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </Trigger.ExitActions>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="#2CFFFFFF" TargetName="border" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- TODO : Item 선택 시 이상한 버그있음 -->
+    <Style x:Key="DecoToggleButtonStyle" TargetType="ToggleButton">
+        <Setter Property="Background" Value="#22FFFFFF"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Padding" Value="15"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="border" 
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="4"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Background" TargetName="border" Value="#33FFFFFF"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="true">
+                            <Setter Property="Background" TargetName="border" Value="#4466CCFF"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Name="ContentTitleStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="28"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="Foreground" Value="#CCFFFFFF"/>
+    </Style>
+
+    <Style x:Name="ContentSubtitleStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="#CCFFFFFF"/>
+        <Setter Property="Margin" Value="0,5,0,20"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="#CCFFFFFF"/>
+        <Setter Property="Margin" Value="5,20,0,10"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+    
+    <Style x:Name="SectionBodyStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="Foreground" Value="#CCFFFFFF"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+        <Setter Property="Margin" Value="0,5,0,5"/>
+    </Style>
+    
+</ResourceDictionary>

@@ -17,12 +17,11 @@ using System.Windows.Shapes;
 namespace FusionCammy.App.Views
 {
     /// <summary>
-    /// MainView.xaml에 대한 상호 작용 논리
+    /// DecoSelectionView.xaml에 대한 상호 작용 논리
     /// </summary>
-    [Obsolete("CamView로 대체 중")]
-    public partial class MainView : Page
+    public partial class FunctionView : UserControl
     {
-        public MainView(CamViewModel viewModel)
+        public FunctionView(FunctionViewModel viewModel)
         {
             InitializeComponent();
             DataContext = viewModel;
