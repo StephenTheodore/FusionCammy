@@ -7,10 +7,6 @@ namespace FusionCammy.Core.Managers
     {
         private readonly Dictionary<string, Mat> images = [];
 
-        public void Initialize()
-        {
-        }
-
         public void RegisterImage (string key, string imagePath)
         {
             if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(imagePath))

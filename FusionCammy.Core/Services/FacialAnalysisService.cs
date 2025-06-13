@@ -5,6 +5,8 @@ using FusionCammy.Core.Utils;
 using Microsoft.Extensions.Options;
 using OpenCvSharp;
 using System.Diagnostics;
+using System.Drawing;
+using System.Runtime.InteropServices;
 
 namespace FusionCammy.Core.Services
 {
@@ -18,18 +20,15 @@ namespace FusionCammy.Core.Services
         {
             ArgumentNullException.ThrowIfNull(image);
 
-#if DEBUG
-            Debugger.Break();
-#endif
-            using var dlibImage = Dlib.LoadImageData<RgbPixel>(image.Data, (uint)image.Height, (uint)image.Width, (uint)image.Step());
+            byte[] dataArray = new byte[image.Width * image.Height * image.ElemSize()];
+            Marshal.Copy(image.Data, dataArray, 0, dataArray.Length);
+
+            using var dlibImage = Dlib.LoadImageData<BgrPixel>(dataArray, (uint)image.Height, (uint)image.Width, (uint)image.Step());
 
             var faceRects = _faceDetector.Operator(dlibImage);
             if (faceRects.Length == 0)
                 return null;
 
-#if DEBUG
-            Debugger.Break();
-#endif
             var faceRect = faceRects[0];
             var shape = _shapePredictor.Detect(dlibImage, faceRect);
             var faceInfo = new FaceInfo
@@ -37,8 +36,8 @@ namespace FusionCammy.Core.Services
                 Bounds = faceRect.ConvertToCvRect(),
                 NosePosition = shape.GetPart(30).ConvertToCvPoint(),
                 MouthPosition = shape.GetPart(62).ConvertToCvPoint(),
-                LeftEyePosition = shape.GetPart(36).ConvertToCvPoint(),
-                RightEyePosition = shape.GetPart(45).ConvertToCvPoint(),
+                LeftEyePosition = shape.GetPart(38).ConvertToCvPoint(),
+                RightEyePosition = shape.GetPart(43).ConvertToCvPoint(),
                 LeftEarPosition = shape.GetPart(0).ConvertToCvPoint(),
                 RightEarPosition = shape.GetPart(16).ConvertToCvPoint(),
                 LeftCheekPosition = shape.GetPart(1).ConvertToCvPoint(),

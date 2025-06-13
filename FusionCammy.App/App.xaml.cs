@@ -1,13 +1,16 @@
-﻿using FusionCammy.App.ViewModels;
+﻿using FusionCammy.App.Managers;
+using FusionCammy.App.ViewModels;
 using FusionCammy.App.Views;
 using FusionCammy.Core.Configurations;
 using FusionCammy.Core.Managers;
+using FusionCammy.Core.Models;
 using FusionCammy.Core.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System.Text.Json;
 using System.Windows;
+using System.Windows.Media;
 
 namespace FusionCammy.App
 {
@@ -51,14 +54,16 @@ namespace FusionCammy.App
             #endregion
 
             #region Core.Managers
-            services.AddSingleton<AssetManager>();
             services.AddSingleton<CameraManager>();
+
+            services.AddSingleton<AssetManager>();
             services.AddSingleton<DecorationManager>();
             #endregion
 
             #region Core.Services
             services.AddSingleton<AcquisitionService>();
             services.AddSingleton<DecorationService>();
+            services.AddSingleton<FacialAnalysisService>();
             #endregion
 
             #region Configurations
@@ -96,7 +101,8 @@ namespace FusionCammy.App
         private static void InitializeEssentialComponents()
         {
             var assetManager = Services.GetRequiredService<AssetManager>();
-            assetManager.Initialize();
+            // TODO : 전체 애셋 로딩, 분류 자동화
+            assetManager.RegisterImage($"{Colors.Red}_{DecorationType.Nose}_Ball", @"Assets\Decorations\Nose\Ball_Red.png");
 
             var cameraManager = Services.GetRequiredService<CameraManager>();
             cameraManager.Initialize();

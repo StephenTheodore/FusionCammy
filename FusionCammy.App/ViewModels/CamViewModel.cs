@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using FusionCammy.App.Utils;
-using FusionCammy.Core.Managers;
+using FusionCammy.App.Managers;
+using FusionCammy.Core.Models;
 using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using System.Windows.Media;
@@ -66,16 +66,17 @@ namespace FusionCammy.App.ViewModels
             // This could involve opening a save file dialog and saving the current ImageSource to a file
         }
 
-        private void OnTick(object? sender, EventArgs e)
+        private async void OnTick(object? sender, EventArgs e)
         {
-            if (_cameraManager.TryGetFrameData(out Mat frameData))
+            var processedFrame = await _cameraManager.TryGetFrameDataAsync();
+            if (processedFrame is not null)
             {
                 if (ImageSource is null ||
-                    ImageSource.Width - frameData.Width > double.Epsilon ||
-                    ImageSource.Height - frameData.Height > double.Epsilon)
-                    ImageSource = new WriteableBitmap(frameData.Width, frameData.Height, 96, 96, PixelFormats.Bgr24, null);
+                    ImageSource.Width - processedFrame.Image.Width > double.Epsilon ||
+                    ImageSource.Height - processedFrame.Image.Height > double.Epsilon)
+                    ImageSource = new WriteableBitmap(processedFrame.Image.Width, processedFrame.Image.Height, 96, 96, PixelFormats.Bgr24, null);
 
-                WriteableBitmapConverter.ToWriteableBitmap(frameData, (WriteableBitmap)ImageSource);    // TODO : 여기서 하지않고 CameraManager쪽으로 이동
+                WriteableBitmapConverter.ToWriteableBitmap(processedFrame.Image, (WriteableBitmap)ImageSource);    // TODO : 여기서 하지않고 CameraManager쪽으로 이동
             }
         }
         #endregion

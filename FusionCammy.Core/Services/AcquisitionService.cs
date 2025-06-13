@@ -19,6 +19,8 @@ namespace FusionCammy.Core.Services
         #endregion
 
         #region Property
+        public CameraInfo CameraInfo { get; set; } = null!;
+
         public int TargetFrameRate { get; set; } = 30;
         #endregion
 
@@ -27,9 +29,9 @@ namespace FusionCammy.Core.Services
         #endregion
 
         #region Method
-        public void StartLive(CameraInfo cameraInfo)
+        public async Task StartLive()
         {
-            _videoCapture.Open(cameraInfo.Index, VideoCaptureAPIs.MSMF);
+            _videoCapture.Open(CameraInfo.Index, VideoCaptureAPIs.MSMF);
             _taskCancellation = new CancellationTokenSource();
             _acquisitionTask = LiveLoopAsync(_taskCancellation.Token);
         }
@@ -47,12 +49,12 @@ namespace FusionCammy.Core.Services
             _liveImageBuffer?.Flush();
         }
 
-        public async Task TakeSingleFrame(CameraInfo cameraInfo)
+        public async Task TakeSingleFrame()
         {
             if (!_videoCapture.IsOpened())
                 throw new InvalidOperationException("Camera is not opened.");
             else
-                _videoCapture.Open(cameraInfo.Index, VideoCaptureAPIs.MSMF);
+                _videoCapture.Open(CameraInfo.Index, VideoCaptureAPIs.MSMF);
 
             using var frame = new Mat();
 
