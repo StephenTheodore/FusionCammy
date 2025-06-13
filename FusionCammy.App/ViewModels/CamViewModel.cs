@@ -75,7 +75,7 @@ namespace FusionCammy.App.ViewModels
                     ImageSource.Height - frameData.Height > double.Epsilon)
                     ImageSource = new WriteableBitmap(frameData.Width, frameData.Height, 96, 96, PixelFormats.Bgr24, null);
 
-                WriteableBitmapConverter.ToWriteableBitmap(frameData, (WriteableBitmap)ImageSource);
+                WriteableBitmapConverter.ToWriteableBitmap(frameData, (WriteableBitmap)ImageSource);    // TODO : 여기서 하지않고 CameraManager쪽으로 이동
             }
         }
         #endregion
