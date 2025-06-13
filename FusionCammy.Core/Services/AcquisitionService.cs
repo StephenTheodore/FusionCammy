@@ -34,11 +34,16 @@ namespace FusionCammy.Core.Services
             _acquisitionTask = LiveLoopAsync(_taskCancellation.Token);
         }
 
-        public void StopLive()
+        public async Task StopLive()
         {
-            _taskCancellation?.Cancel();
+            if (_taskCancellation is not null)
+                await _taskCancellation.CancelAsync();
+
+            if (_acquisitionTask is not null)
+                await _acquisitionTask.ConfigureAwait(false);
+
             _taskCancellation?.Dispose();
-            _acquisitionTask?.Wait();
+            _acquisitionTask?.Dispose();
             _liveImageBuffer?.Flush();
         }
 
@@ -46,12 +51,15 @@ namespace FusionCammy.Core.Services
         {
             if (!_videoCapture.IsOpened())
                 throw new InvalidOperationException("Camera is not opened.");
+            else
+                _videoCapture.Open(cameraInfo.Index, VideoCaptureAPIs.MSMF);
 
             using var frame = new Mat();
 
             if (_videoCapture.Read(frame) && frame.Data != nint.Zero)
                 OnFrameCaptured?.Invoke(this, frame.Clone());
 
+            _videoCapture.Release();
             await Task.CompletedTask;
         }
 
