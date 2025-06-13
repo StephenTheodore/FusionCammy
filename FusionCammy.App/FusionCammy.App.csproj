@@ -16,7 +16,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Assets\" />
+    <Folder Include="Assets\Decorations\Eyes\" />
+    <Folder Include="Assets\Decorations\Head\" />
+    <Folder Include="Assets\Decorations\Mouth\" />
+    <Folder Include="Assets\Decorations\Ears\" />
+    <Folder Include="Assets\Decorations\Cheeks\" />
+    <Folder Include="Assets\Decorations\Face\" />
+    <Folder Include="Assets\UI\Icons\" />
+    <Folder Include="Assets\UI\NewFolder\" />
   </ItemGroup>
 
   <ItemGroup>

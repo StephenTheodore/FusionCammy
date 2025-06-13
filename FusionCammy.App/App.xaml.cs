@@ -27,8 +27,6 @@ namespace FusionCammy.App
         private static ServiceProvider BuildServiceProvider(IServiceCollection services)
         {
             #region Views & ViewModels
-            services.AddSingleton<MainView>();
-
             services.AddTransient<CamView>();
             services.AddTransient<CamViewModel>();
 
@@ -50,7 +48,7 @@ namespace FusionCammy.App
             return services.BuildServiceProvider();
         }
 
-        private void InitializeEssentialComponents()
+        private static void InitializeEssentialComponents()
         {
             var assetManager = Services.GetRequiredService<AssetManager>();
             assetManager.Initialize();

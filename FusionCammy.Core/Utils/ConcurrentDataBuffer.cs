@@ -2,10 +2,10 @@
 
 namespace FusionCammy.Core.Utils
 {
-    public class ConcurrentDataBuffer<T> where T : struct, IComparable, IConvertible, IFormattable
+    public class ConcurrentDataBuffer<T> where T : class, IDisposable
     {
         #region Field  
-        private readonly ConcurrentQueue<IEnumerable<T>> _queue = new();
+        private readonly ConcurrentQueue<T> _queue = new();
         #endregion
 
         #region Property
@@ -13,24 +13,33 @@ namespace FusionCammy.Core.Utils
         #endregion
 
         #region Method  
-        public bool Put(IEnumerable<T> datas)
+        public bool Put(T data)
         {
             if (_queue.Count >= Capacity)
                 _ = Get();
 
-            _queue.Enqueue(datas);
+            _queue.Enqueue(data);
             return true;
         }
 
-        public IEnumerable<T>? Get()
+        public bool Put(IEnumerable<T> datas)
         {
-            _queue.TryDequeue(out IEnumerable<T>? datas);
+            foreach (T data in datas)
+                Put(data);
+
+            return true;
+        }
+
+        public T? Get()
+        {
+            _queue.TryDequeue(out T? datas);
             return datas;
         }
 
         public void Flush()
         {
-            while (Get() is not null) { }
+            while (Get() is T data)
+                data.Dispose();
         }
         #endregion
     }

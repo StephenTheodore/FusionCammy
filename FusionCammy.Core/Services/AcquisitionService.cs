@@ -10,7 +10,7 @@ namespace FusionCammy.Core.Services
         #region Field
         private readonly VideoCapture _videoCapture = new();
 
-        private readonly ConcurrentDataBuffer<byte> _buffer = new();
+        private readonly ConcurrentDataBuffer<Mat> _liveImageBuffer = new();
 
         private CancellationTokenSource? _taskCancellation;
 
@@ -22,69 +22,63 @@ namespace FusionCammy.Core.Services
         #endregion
 
         #region Method
-        public void Start(CameraInfo cameraInfo)
+        public void StartLive(CameraInfo cameraInfo)
         {
-            _videoCapture.Open(cameraInfo.Index, VideoCaptureAPIs.ANY);
+            _videoCapture.Open(cameraInfo.Index, VideoCaptureAPIs.MSMF);
             _taskCancellation = new CancellationTokenSource();
-            _acquisitionTask = CaptureLoopAsync(_taskCancellation.Token);
+            _acquisitionTask = LiveLoopAsync(_taskCancellation.Token);
         }
 
-        public void Stop()
+        public void StopLive()
         {
-            if (_taskCancellation is not null)
-            {
-                _taskCancellation.Cancel();
-                _taskCancellation.Dispose();
-            }
-
-            if (_acquisitionTask is not null)
-            {
-                try
-                {
-                    _acquisitionTask.Wait();
-                }
-                catch (OperationCanceledException)
-                {
-                    // TODO : 취소 시 동작
-                }
-            }
-
-            _buffer.Flush();
+            _taskCancellation?.Cancel();
+            _taskCancellation?.Dispose();
+            _acquisitionTask?.Wait();
+            _liveImageBuffer?.Flush();
         }
 
-        private async Task CaptureLoopAsync(CancellationToken token)
+        private async Task LiveLoopAsync(CancellationToken token)
         {
-            var frame = new Mat();
-
             try
             {
+                if (!_videoCapture.IsOpened())
+                    throw new InvalidOperationException("Camera is not opened.");
+
+                using var frame = new Mat();
                 while (!token.IsCancellationRequested)
                 {
                     token.ThrowIfCancellationRequested();
 
-                    if (_videoCapture.Read(frame) && frame.Data != IntPtr.Zero)
-                    {
-                        var dataSize = (int)(frame.Total() * frame.ElemSize());
-                        byte[] data = new byte[dataSize];
-                        Marshal.Copy(frame.Data, data, 0, dataSize);
-                        _buffer.Put(data);
-                    }
+                    var stopwatch = System.Diagnostics.Stopwatch.StartNew(); // 측정 시작  
 
-                    await Task.Delay(1000 / TargetFrameRate, token).ConfigureAwait(false);
+                    if (_videoCapture.Read(frame) && frame.Data != IntPtr.Zero)
+                        _liveImageBuffer.Put(frame.Clone());
+
+                    stopwatch.Stop(); // 측정 종료  
+
+
+                    var acquireDelay = (int)Math.Max(5, (1000 / TargetFrameRate) - stopwatch.ElapsedMilliseconds);
+
+                    System.Diagnostics.Debug.WriteLine($"Frame acquisition time: {stopwatch.ElapsedMilliseconds} ms, Delay {acquireDelay}");
+
+                    await Task.Delay(acquireDelay, token).ConfigureAwait(false);
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                // 취소 요청은 스킵, 로그만?  
             }
             finally
             {
-                frame.Dispose();
                 _videoCapture.Release();
             }
         }
 
-        public bool TryGetFrameDatas(out byte[] frame)
+        public bool TryGetFrameData(out Mat frame)
         {
-            if (_buffer.Get() is IEnumerable<byte> data)
+            if (_liveImageBuffer.Get() is Mat data)
             {
-                frame = data.ToArray();
+                frame = data;
                 return true;
             }
             else

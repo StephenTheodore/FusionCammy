@@ -42,22 +42,22 @@ namespace FusionCammy.Core.Managers
                 _selectedCameraInfo = cameraInfo;
         }
 
-        public void Start()
+        public void StartLive()
         {
-            _acquisitionService.Start(_selectedCameraInfo);
+            _acquisitionService.StartLive(_selectedCameraInfo);
         }
 
-        public void Stop()
+        public void StopLive()
         {
             foreach (var cam in _cameraInfos)
                 cam.IsStreaming = false;
 
-            _acquisitionService.Stop();
+            _acquisitionService.StopLive();
         }
 
-        public bool TryGetFrameData(out byte[] frameData)
+        public bool TryGetFrameData(out Mat frameData)
         {
-            return _acquisitionService.TryGetFrameDatas(out frameData);
+            return _acquisitionService.TryGetFrameData(out frameData);
         }
         #endregion
     }
