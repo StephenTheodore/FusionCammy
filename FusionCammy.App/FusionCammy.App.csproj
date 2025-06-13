@@ -11,7 +11,11 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.6" />
     <PackageReference Include="OpenCvSharp4.WpfExtensions" Version="4.11.0.20250507" />
   </ItemGroup>
 
@@ -22,12 +26,19 @@
     <Folder Include="Assets\Decorations\Ears\" />
     <Folder Include="Assets\Decorations\Cheeks\" />
     <Folder Include="Assets\Decorations\Face\" />
+    <Folder Include="Assets\MlModels\" />
     <Folder Include="Assets\UI\Icons\" />
     <Folder Include="Assets\UI\NewFolder\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FusionCammy.Core\FusionCammy.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Assets\MlModels\shape_predictor_68_face_landmarks.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
