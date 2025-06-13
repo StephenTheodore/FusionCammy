@@ -14,14 +14,14 @@
         Gray
     }
 
-    public enum DecorationType  // TODO : 필요없으면 지우기
+    public enum DecorationType
     {
+        Head,
+        Face,
+        Eyes,
         Nose,
-        Glasses,
-        Hat,
-        Mask,
-        Hair,
-        Lipstick,
-        Blush,
+        Mouth,
+        Ears,
+        Cheeks,
     }
 }
