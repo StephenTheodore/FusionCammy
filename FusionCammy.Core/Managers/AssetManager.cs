@@ -12,7 +12,7 @@ namespace FusionCammy.Core.Managers
             if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(imagePath))
                 throw new ArgumentException("Key or ImagePath cannot be null or empty.");
 
-            Mat image = Cv2.ImRead(imagePath, ImreadModes.Color);
+            Mat image = Cv2.ImRead(imagePath, ImreadModes.Unchanged);
             if (image.Empty())
                 throw new FileNotFoundException($"Image not found at path: {imagePath}");
 

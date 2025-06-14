@@ -71,7 +71,7 @@ namespace FusionCammy.App.Managers
             frameData.Circle(faceInfo?.RightCheekPosition ?? new Point(0, 0), 2, Scalar.Cyan, -1);
             
             var noseTestImage = assetManager.GetImage(testAssetName);
-            ImageHelper.OverlayDecorationSimple(frameData, noseTestImage, faceInfo?.NosePosition ?? new Point(0, 0));
+            frameData.OverlayDecorationWithAlpha(noseTestImage, faceInfo?.NosePosition ?? new Point(0, 0), new Size(60, 60));
 
             if (faceInfo is not null)
                 processedFrame.Put(faceInfo);
