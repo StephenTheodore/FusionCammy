@@ -38,10 +38,9 @@ namespace FusionCammy.App.ViewModels
         }
 
         [RelayCommand]
-        private void SaveImage()
+        private void SaveImage() // -> 아래 TODO 하면서 이름 변경
         {
-            // TODO : 이미지 저장
-            // TODO : 시간차 촬상 기능으로 변경 검토
+            // TODO : 시간차 촬상 후 갤러리에 저장
         }
         #endregion
     }

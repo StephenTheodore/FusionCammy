@@ -7,6 +7,13 @@ namespace FusionCammy.App.Utils
 {
     public static class ImageHelper
     {
+        /// <summary>
+        /// Overlays a decoration image onto the main image without considering alpha transparency.
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="decoration"></param>
+        /// <param name="center"></param>
+        /// <param name="targetSize">미사용 예정, Object 크기에 따라 조정할 것</param>
         public static void OverlayDecorationNoneAlpha(this Mat image, Mat decoration, Point center, Size? targetSize = null)
         {
             Mat resized = targetSize.HasValue ? decoration.Resize(targetSize.Value) : decoration;
@@ -26,6 +33,13 @@ namespace FusionCammy.App.Utils
                 resized.Dispose();
         }
 
+        /// <summary>
+        /// Overlays a decoration image onto the main image considering alpha transparency.
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="decoration"></param>
+        /// <param name="center"></param>
+        /// <param name="targetSize">미사용 예정, Object 크기에 따라 조정할 것</param>
         public static void OverlayDecorationWithAlpha(this Mat image, Mat decoration, Point center, Size? targetSize = null)
         {
             if (decoration.Empty() || decoration.Channels() != 4)

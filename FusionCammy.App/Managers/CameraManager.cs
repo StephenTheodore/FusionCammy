@@ -60,6 +60,7 @@ namespace FusionCammy.App.Managers
             var processedFrame = new ProcessedFrame(frameData);
             var faceInfo = await facialAnalysisService.AnalyzeAsync(frameData);
 
+#if DEBUG
             frameData.Rectangle(faceInfo?.Bounds ?? new Rect(0, 0, 0, 0), Scalar.Red, 2);
             frameData.Circle(faceInfo?.NosePosition ?? new Point(0, 0), 2, Scalar.Blue, -1);
             frameData.Circle(faceInfo?.MouthPosition ?? new Point(0, 0), 2, Scalar.Green, -1);
@@ -69,7 +70,8 @@ namespace FusionCammy.App.Managers
             frameData.Circle(faceInfo?.RightEarPosition ?? new Point(0, 0), 2, Scalar.Purple, -1);
             frameData.Circle(faceInfo?.LeftCheekPosition ?? new Point(0, 0), 2, Scalar.Cyan, -1);
             frameData.Circle(faceInfo?.RightCheekPosition ?? new Point(0, 0), 2, Scalar.Cyan, -1);
-            
+#endif
+
             var noseTestImage = assetManager.GetImage(testAssetName);
             frameData.OverlayDecorationWithAlpha(noseTestImage, faceInfo?.NosePosition ?? new Point(0, 0), new Size(60, 60));
 
