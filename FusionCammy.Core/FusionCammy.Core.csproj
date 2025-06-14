@@ -9,6 +9,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Decorations\**" />
+    <EmbeddedResource Remove="Decorations\**" />
+    <None Remove="Decorations\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Models\VisualLayout.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="DlibDotNet" Version="19.21.0.20220724" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.6" />

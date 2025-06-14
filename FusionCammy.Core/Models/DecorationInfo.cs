@@ -4,16 +4,13 @@ namespace FusionCammy.Core.Models
 {
     public partial class DecorationInfo : ObservableObject
     {
-        [ObservableProperty]
-        private string id;
+        public string Id { get; set; } = null!;
 
-        [ObservableProperty]
-        private string name;
+        public FacePartType FacePartType { get; set; }
+
+        public double scale { get; set; } = 1d;
 
         [ObservableProperty]
         private bool isSelected;
-
-        [ObservableProperty]
-        private bool isVisible;
     }
 }

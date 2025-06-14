@@ -1,19 +1,14 @@
-﻿using FusionCammy.App.Utils;
-using FusionCammy.Core.Managers;
-using FusionCammy.Core.Models;
+﻿using FusionCammy.Core.Models;
 using FusionCammy.Core.Services;
 using OpenCvSharp;
-using System.Windows.Media;
 
 namespace FusionCammy.App.Managers
 {
     // TODO : CameraManager 역할 추가에 따른 이름 변경 고려
-    public class CameraManager(AcquisitionService acquisitionService, FacialAnalysisService facialAnalysisService, AssetManager assetManager)
+    public class ImageProcessingManager(AcquisitionService acquisitionService, FacialAnalysisService facialAnalysisService, DecorationService decorationService)
     {
         #region Field
         private readonly List<CameraInfo> _cameraInfos = [];
-
-        private readonly string testAssetName = $"{Colors.Red}_{DecorationType.Nose}_Ball";
         #endregion
 
         #region Property
@@ -54,7 +49,7 @@ namespace FusionCammy.App.Managers
 
         public async Task<ProcessedFrame?> TryGetFrameDataAsync()
         {
-            if (!acquisitionService.TryGetFrameData(out Mat frameData))
+            if (!acquisitionService.TryGetFrameData(out Mat? frameData) || frameData is null)
                 return null;
 
             var processedFrame = new ProcessedFrame(frameData);
@@ -62,21 +57,24 @@ namespace FusionCammy.App.Managers
 
 #if DEBUG
             frameData.Rectangle(faceInfo?.Bounds ?? new Rect(0, 0, 0, 0), Scalar.Red, 2);
-            frameData.Circle(faceInfo?.NosePosition ?? new Point(0, 0), 2, Scalar.Blue, -1);
-            frameData.Circle(faceInfo?.MouthPosition ?? new Point(0, 0), 2, Scalar.Green, -1);
-            frameData.Circle(faceInfo?.LeftEyePosition ?? new Point(0, 0), 2, Scalar.Yellow, -1);
-            frameData.Circle(faceInfo?.RightEyePosition ?? new Point(0, 0), 2, Scalar.Yellow, -1);
-            frameData.Circle(faceInfo?.LeftEarPosition ?? new Point(0, 0), 2, Scalar.Purple, -1);
-            frameData.Circle(faceInfo?.RightEarPosition ?? new Point(0, 0), 2, Scalar.Purple, -1);
-            frameData.Circle(faceInfo?.LeftCheekPosition ?? new Point(0, 0), 2, Scalar.Cyan, -1);
-            frameData.Circle(faceInfo?.RightCheekPosition ?? new Point(0, 0), 2, Scalar.Cyan, -1);
+            foreach (FacePartType facePart in Enum.GetValues(typeof(FacePartType)))
+            {
+                if(faceInfo?.Anchors is null || !faceInfo.Anchors.ContainsKey(facePart))
+                    continue;
+
+                foreach (var anchorPoint in faceInfo?.Anchors[facePart] ?? [])
+                    frameData.Circle(anchorPoint, 3, Scalar.FromDouble(16 * (int)facePart), -1);
+            }
 #endif
 
-            var noseTestImage = assetManager.GetImage(testAssetName);
-            frameData.OverlayDecorationWithAlpha(noseTestImage, faceInfo?.NosePosition ?? new Point(0, 0), new Size(60, 60));
-
             if (faceInfo is not null)
+            {
+                decorationService.Decorate(frameData, faceInfo);
                 processedFrame.Put(faceInfo);
+                acquisitionService.SetCaptureConfigurations(false);
+            }
+            else
+                acquisitionService.SetCaptureConfigurations(true);
 
             return processedFrame;
         }

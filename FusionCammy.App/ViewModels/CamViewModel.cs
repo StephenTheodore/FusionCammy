@@ -13,7 +13,7 @@ namespace FusionCammy.App.ViewModels
     public partial class CamViewModel : ObservableObject
     {
         #region Field
-        private readonly CameraManager _cameraManager;
+        private readonly ImageProcessingManager _cameraManager;
 
         private readonly DispatcherTimer _pollTimer;
 
@@ -22,7 +22,7 @@ namespace FusionCammy.App.ViewModels
         #endregion
 
         #region Constructor
-        public CamViewModel(CameraManager cameraManager)
+        public CamViewModel(ImageProcessingManager cameraManager)
         {
             _cameraManager = cameraManager;
 

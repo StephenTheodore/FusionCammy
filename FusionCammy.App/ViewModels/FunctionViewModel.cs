@@ -8,11 +8,11 @@ namespace FusionCammy.App.ViewModels
     public partial class FunctionViewModel : ObservableObject
     {
         #region Field
-        private readonly CameraManager _cameraManager;
+        private readonly ImageProcessingManager _cameraManager;
         #endregion
 
         #region Constructor
-        public FunctionViewModel(CameraManager cameraManager)
+        public FunctionViewModel(ImageProcessingManager cameraManager)
         {
             _cameraManager = cameraManager;
         }

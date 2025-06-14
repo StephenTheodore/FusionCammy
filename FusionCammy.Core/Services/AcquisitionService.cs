@@ -2,7 +2,6 @@
 using FusionCammy.Core.Utils;
 using OpenCvSharp;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 namespace FusionCammy.Core.Services
 {
@@ -16,6 +15,8 @@ namespace FusionCammy.Core.Services
         private CancellationTokenSource? _taskCancellation;
 
         private Task? _acquisitionTask;
+
+        private bool isAutoOptionEnabled = true;
         #endregion
 
         #region Property
@@ -31,7 +32,15 @@ namespace FusionCammy.Core.Services
         #region Method
         public async Task StartLive()
         {
-            _videoCapture.Open(CameraInfo.Index, VideoCaptureAPIs.MSMF);
+            bool openSuccess = _videoCapture.Open(CameraInfo.Index, VideoCaptureAPIs.MSMF)
+                || _videoCapture.Open(CameraInfo.Index, VideoCaptureAPIs.DSHOW)
+                || _videoCapture.Open(CameraInfo.Index, VideoCaptureAPIs.ANY);
+
+            if (!openSuccess)
+                throw new InvalidOperationException($"Failed to open camera at index {CameraInfo.Index}.");
+
+            _videoCapture.Set(VideoCaptureProperties.FrameWidth, CameraInfo.Width);
+            _videoCapture.Set(VideoCaptureProperties.FrameHeight, CameraInfo.Height);
             _taskCancellation = new CancellationTokenSource();
             _acquisitionTask = LiveLoopAsync(_taskCancellation.Token);
         }
@@ -102,7 +111,7 @@ namespace FusionCammy.Core.Services
             }
         }
 
-        public bool TryGetFrameData(out Mat frame)
+        public bool TryGetFrameData(out Mat? frame)
         {
             if (_liveImageBuffer.Get() is Mat data)
             {
@@ -111,8 +120,22 @@ namespace FusionCammy.Core.Services
             }
             else
             {
-                frame = default;
+                frame = null;
                 return false;
+            }
+        }
+
+        public void SetCaptureConfigurations(bool isEnable)
+        {
+            if (isAutoOptionEnabled == isEnable)
+                return;
+            else
+                isAutoOptionEnabled = isEnable;
+
+            if (_videoCapture is not null && _videoCapture.IsOpened())
+            {
+                _videoCapture.Set(VideoCaptureProperties.AutoFocus, isAutoOptionEnabled ? 1 : 0);
+                _videoCapture.Set(VideoCaptureProperties.AutoWB, isAutoOptionEnabled ? 1 : 0);
             }
         }
         #endregion

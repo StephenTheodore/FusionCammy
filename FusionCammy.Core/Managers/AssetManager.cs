@@ -1,5 +1,4 @@
-﻿using FusionCammy.Core.Decorations;
-using OpenCvSharp;
+﻿using OpenCvSharp;
 
 namespace FusionCammy.Core.Managers
 {

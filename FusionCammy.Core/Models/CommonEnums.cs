@@ -14,14 +14,18 @@
         Gray
     }
 
-    public enum DecorationType
+    public enum FacePartType
     {
-        Head,
-        Face,
-        Eyes,
+        LeftEye,
+        RightEye,
+        LeftBrow,
+        RightBrow,
+
         Nose,
-        Mouth,
-        Ears,
-        Cheeks,
+
+        OuterMouth,
+        InnerMouth,
+
+        Jawline,
     }
 }

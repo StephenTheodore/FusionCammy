@@ -4,8 +4,6 @@ using FusionCammy.Core.Models;
 using FusionCammy.Core.Utils;
 using Microsoft.Extensions.Options;
 using OpenCvSharp;
-using System.Diagnostics;
-using System.Drawing;
 using System.Runtime.InteropServices;
 
 namespace FusionCammy.Core.Services
@@ -16,6 +14,7 @@ namespace FusionCammy.Core.Services
 
         private readonly FrontalFaceDetector _faceDetector = Dlib.GetFrontalFaceDetector();
 
+        /// <summary>Performs facial analysis on the provided image and returns face information if detected.</summary>
         public async Task<FaceInfo?> AnalyzeAsync(Mat image)
         {
             ArgumentNullException.ThrowIfNull(image);
@@ -34,14 +33,7 @@ namespace FusionCammy.Core.Services
             var faceInfo = new FaceInfo
             {
                 Bounds = faceRect.ConvertToCvRect(),
-                NosePosition = shape.GetPart(30).ConvertToCvPoint(),
-                MouthPosition = shape.GetPart(62).ConvertToCvPoint(),
-                LeftEyePosition = shape.GetPart(38).ConvertToCvPoint(),
-                RightEyePosition = shape.GetPart(43).ConvertToCvPoint(),
-                LeftEarPosition = shape.GetPart(0).ConvertToCvPoint(),
-                RightEarPosition = shape.GetPart(16).ConvertToCvPoint(),
-                LeftCheekPosition = shape.GetPart(1).ConvertToCvPoint(),
-                RightCheekPosition = shape.GetPart(15).ConvertToCvPoint()
+                Anchors = shape.ExtractLandmarksFrom68PointPredictor(),
             };
 
             return faceInfo;

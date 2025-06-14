@@ -54,7 +54,7 @@ namespace FusionCammy.App
             #endregion
 
             #region Core.Managers
-            services.AddSingleton<CameraManager>();
+            services.AddSingleton<ImageProcessingManager>();
 
             services.AddSingleton<AssetManager>();
             services.AddSingleton<DecorationManager>();
@@ -102,13 +102,13 @@ namespace FusionCammy.App
         {
             var assetManager = Services.GetRequiredService<AssetManager>();
             // TODO : 전체 애셋 로딩, 분류 자동화
-            assetManager.RegisterImage($"{Colors.Red}_{DecorationType.Nose}_Ball", @"Assets\Decorations\Nose\Ball_Red.png");
-
-            var cameraManager = Services.GetRequiredService<CameraManager>();
-            cameraManager.Initialize();
+            assetManager.RegisterImage($"{Colors.Red}_{FacePartType.Nose}_Ball", @"Assets\Decorations\Nose\Ball_Red.png");
 
             var decorationManager = Services.GetRequiredService<DecorationManager>();
-            decorationManager.Initialize();
+            decorationManager.Put($"{Colors.Red}_{FacePartType.Nose}_Ball", FacePartType.Nose, 1.5d, true);
+
+            var imageProcessingManager = Services.GetRequiredService<ImageProcessingManager>();
+            imageProcessingManager.Initialize();
         }
         #endregion
     }

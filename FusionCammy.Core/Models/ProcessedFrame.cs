@@ -45,7 +45,6 @@ namespace FusionCammy.Core.Models
                 if (disposing)
                 {
                     Image.Dispose();
-                    Image = null;
                 }
 
                 disposedValue = true;

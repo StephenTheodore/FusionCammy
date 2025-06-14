@@ -11,6 +11,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Assets\Decorations\Cheeks\**" />
+    <Compile Remove="Assets\Decorations\Ears\**" />
+    <Compile Remove="Assets\Decorations\Head\**" />
+    <EmbeddedResource Remove="Assets\Decorations\Cheeks\**" />
+    <EmbeddedResource Remove="Assets\Decorations\Ears\**" />
+    <EmbeddedResource Remove="Assets\Decorations\Head\**" />
+    <None Remove="Assets\Decorations\Cheeks\**" />
+    <None Remove="Assets\Decorations\Ears\**" />
+    <None Remove="Assets\Decorations\Head\**" />
+    <Page Remove="Assets\Decorations\Cheeks\**" />
+    <Page Remove="Assets\Decorations\Ears\**" />
+    <Page Remove="Assets\Decorations\Head\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.6" />
@@ -22,10 +37,7 @@
 
   <ItemGroup>
     <Folder Include="Assets\Decorations\Eyes\" />
-    <Folder Include="Assets\Decorations\Head\" />
     <Folder Include="Assets\Decorations\Mouth\" />
-    <Folder Include="Assets\Decorations\Ears\" />
-    <Folder Include="Assets\Decorations\Cheeks\" />
     <Folder Include="Assets\Decorations\Face\" />
     <Folder Include="Assets\MlModels\" />
     <Folder Include="Assets\UI\Icons\" />
