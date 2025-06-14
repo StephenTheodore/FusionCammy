@@ -1,0 +1,45 @@
+name: Build and Release .NET Desktop App
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Restore and Build
+      run: msbuild FusionCammy.sln /p:Configuration=Release
+
+    - name: Zip All Output (exe + assets)
+      run: |
+        $buildOutput = Get-ChildItem -Path . -Recurse -Directory | Where-Object { $_.FullName -like '*\bin\Release\net8.0-windows' }
+        foreach ($folder in $buildOutput) {
+          Compress-Archive -Path "$($folder.FullName)\*" -DestinationPath "$($folder.Parent.Parent.FullName)\FusionCammy.zip"
+        }
+
+    - name: Upload to Release
+      uses: softprops/action-gh-release@v1
+      with:
+        name: Release ${{ github.ref_name }}
+        tag_name: ${{ github.ref_name }}
+        files: |
+          **/FusionCammy.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
