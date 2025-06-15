@@ -114,6 +114,28 @@ namespace FusionCammy.Core.Utils
             }
         }
 
+        public static Point2f GetCenterPointf(IReadOnlyList<Point2f> points)
+        {
+            if (points == null || points.Count == 0)
+                return new Point2f(0f, 0f);
+            else if (points.Count == 1)
+                return points[0];
+            else if (points.Count == 2)
+                return new Point2f(
+                    (points[0].X + points[1].X) / 2f,
+                    (points[0].Y + points[1].Y) / 2f
+                );
+            else
+            {
+                var moments = Cv2.Moments(points);
+
+                return new Point2f(
+                    (float)(moments.M10 / moments.M00),
+                    (float)(moments.M01 / moments.M00)
+                );
+            }
+        }
+
         public static float GetAngleBetween(Point2f point1, Point2f point2)
         {
             float dx = point2.X - point1.X;

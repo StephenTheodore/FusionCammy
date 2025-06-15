@@ -6,7 +6,7 @@
         <Setter Property="Foreground" Value="White" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Padding" Value="12,8" />
-        <Setter Property="FontSize" Value="14" />
+        <Setter Property="FontSize" Value="15" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Template">
             <Setter.Value>
@@ -69,7 +69,7 @@
         <Setter Property="Background" Value="#22FFFFFF" />
         <Setter Property="BorderThickness" Value="0" />
         <Setter Property="Foreground" Value="White" />
-        <Setter Property="Padding" Value="15" />
+        <Setter Property="Padding" Value="5" />
         <Setter Property="HorizontalContentAlignment" Value="Left" />
         <Setter Property="Cursor" Value="Hand" />
         <Setter Property="Template">
@@ -79,16 +79,18 @@
                         x:Name="border"
                         Padding="{TemplateBinding Padding}"
                         Background="{TemplateBinding Background}"
+                        BorderBrush="#77FFFFFF"
+                        BorderThickness="1"
                         CornerRadius="4"
                         SnapsToDevicePixels="True">
                         <ContentPresenter />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="true">
-                            <Setter TargetName="border" Property="Background" Value="#33FFFFFF" />
+                            <Setter TargetName="border" Property="Background" Value="#55FFFFFF" />
                         </Trigger>
                         <Trigger Property="IsChecked" Value="true">
-                            <Setter TargetName="border" Property="Background" Value="#4466CCFF" />
+                            <Setter TargetName="border" Property="Background" Value="#AA22AA22" />
                             <Setter Property="Foreground" Value="White" />
                         </Trigger>
                     </ControlTemplate.Triggers>
@@ -113,7 +115,7 @@
     </Style>
 
     <Style x:Key="TextBlock.Section.Header" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontSize" Value="20" />
         <Setter Property="FontWeight" Value="SemiBold" />
         <Setter Property="Foreground" Value="#CCFFFFFF" />
         <Setter Property="Margin" Value="5,20,0,10" />
@@ -121,7 +123,7 @@
     </Style>
 
     <Style x:Key="TextBlock.Section.Body" TargetType="TextBlock">
-        <Setter Property="FontSize" Value="11" />
+        <Setter Property="FontSize" Value="12" />
         <Setter Property="Foreground" Value="#CCFFFFFF" />
         <Setter Property="TextWrapping" Value="Wrap" />
         <Setter Property="Margin" Value="0,5,0,5" />

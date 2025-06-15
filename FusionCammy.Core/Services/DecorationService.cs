@@ -2,46 +2,45 @@
 using FusionCammy.Core.Models;
 using FusionCammy.Core.Utils;
 using OpenCvSharp;
-using System.Diagnostics;
-using System.Runtime.ExceptionServices;
 
 namespace FusionCammy.Core.Services
 {
-    public class DecorationService (DecorationManager decorationManager, AssetManager assetManager)
+    public class DecorationService(DecorationManager decorationManager, AssetManager assetManager)
     {
         public void Decorate(Mat frameData, FaceInfo? faceInfo)
         {
-            foreach(DecorationInfo decoration in decorationManager.SelectedDecorations)
+            Dictionary<FacePartType, List<Point>> partPoints = [];
+            Dictionary<FacePartType, Point> partCenterPoints = [];
+
+            foreach (var facePartType in Enum.GetValues(typeof(FacePartType)))
+            {
+                if (faceInfo?.Anchors.TryGetValue((FacePartType)facePartType, out var anchors) ?? false)
+                {
+                    partPoints[(FacePartType)facePartType] = anchors;
+                    partCenterPoints[(FacePartType)facePartType] = OpenCvHelper.GetCenterPoint(anchors);
+                }
+            }
+
+            foreach (DecorationInfo decoration in decorationManager.SelectedDecorations)
             {
                 var decorationImage = assetManager.GetImage(decoration.Id);
 
-                var anchorPoints = faceInfo?.Anchors[decoration.FacePartType] ?? [];
-                Point? anchorPoint = decoration.FacePartType switch
-                {
-                    FacePartType.Nose or
-                    FacePartType.Mouth or
-                    FacePartType.LeftEye or
-                    FacePartType.RightEye or
-                    FacePartType.LeftBrow or
-                    FacePartType.RightBrow or
-                    FacePartType.OuterMouth or
-                    FacePartType.InnerMouth => OpenCvHelper.GetCenterPoint(anchorPoints),
+                if (!partPoints.TryGetValue(decoration.FacePartType, out var anchorPoints))
+                    continue;
+                if (!partCenterPoints.TryGetValue(decoration.FacePartType, out var partCenterPoint))
+                    continue;
 
-                    FacePartType.Eyes => new Point(OpenCvHelper.GetCenterPoint(faceInfo?.Anchors[FacePartType.Nose]).X, OpenCvHelper.GetCenterPoint(anchorPoints).Y),
-                    //FacePartType.Nose => anchorPoints[0],   // NoseTip Index : 30
-
-                    FacePartType.Jawline => OpenCvHelper.GetCenterPoint(anchorPoints[8..11] ?? []),
-
-                    _ => throw new NotImplementedException(),
-                };
+                Point? anchorPoint;
+                if (decoration.FacePartType == FacePartType.Eyes && partCenterPoints.TryGetValue(FacePartType.Nose, out var noseCenterPoint))
+                    anchorPoint = new Point(noseCenterPoint.X, partCenterPoint.Y);
+                else
+                    anchorPoint = partCenterPoint;
 
                 var partRect = Cv2.MinAreaRect(anchorPoints);
                 partRect.Size = new Size2f(
                     Math.Max(partRect.Size.Width, partRect.Size.Height) * decoration.ScaleX,
                     Math.Min(partRect.Size.Width, partRect.Size.Height) * decoration.ScaleY);
                 partRect.Angle = OpenCvHelper.GetAngleBetween(anchorPoints.MinBy(point => point.X), anchorPoints.MaxBy(point => point.X));
-
-                Debug.WriteLine($"{decoration.FacePartType} Angle {partRect.Angle}");
 
                 if (anchorPoint.HasValue)
                 {

@@ -11,7 +11,19 @@
     d:DesignWidth="300"
     mc:Ignorable="d">
 
+    <!--#region Declare Resources for Group Binding-->
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="GroupedDecorations" Source="{Binding Decorations}">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription PropertyName="FacePartType" />
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+    </UserControl.Resources>
+    <!--#endregion-->
+
     <Grid>
+
+        <!--#region Content Background Section-->
         <Border Panel.ZIndex="0" ClipToBounds="True">
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -30,13 +42,14 @@
             Panel.ZIndex="1"
             Background="#66000000"
             CornerRadius="8" />
+        <!--#endregion-->
 
+        <!--#region Content Section - Decorations-->
         <Border
             Margin="10"
             Panel.ZIndex="2"
             Background="Transparent">
             <StackPanel Margin="20">
-
                 <TextBlock Style="{StaticResource TextBlock.Content.Title}" Text="Fusion Cammy 😸" />
                 <TextBlock Style="{StaticResource TextBlock.Content.Subtitle}" Text="얼굴에 재미를 더해보세요" />
 
@@ -45,66 +58,65 @@
                     Margin="0,10"
                     Background="#33FFFFFF" />
 
-                <TextBlock Style="{StaticResource TextBlock.Section.Header}" Text="카메라 동작" />
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+                <TextBlock Style="{StaticResource TextBlock.Section.Header}" Text="Decoration 🎉" />
 
-                    <!--  TODO : Command 할당 해야함  -->
-                    <Button
-                        Name="Button_StartCam"
-                        Grid.Column="0"
-                        Margin="5"
-                        Command="{Binding StartCameraCommand}"
-                        Content="📹 카메라 켜기"
-                        Style="{StaticResource Button.Fluent}" />
-                    <Button
-                        Name="Button_StopCam"
-                        Grid.Column="1"
-                        Margin="5"
-                        Command="{Binding StopCameraCommand}"
-                        Content="📷 카메라 끄기"
-                        Style="{StaticResource Button.Fluent}" />
-                </Grid>
+                <ScrollViewer Height="420" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl
+                        Background="Transparent"
+                        BorderThickness="0"
+                        ItemsSource="{Binding Source={StaticResource GroupedDecorations}}">
 
-                <TextBlock Style="{StaticResource TextBlock.Section.Header}" Text="장식!" />
-                <ItemsControl
-                    x:Name="DecoItemsList"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    ItemsSource="{Binding Decorations}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <ToggleButton
-                                Margin="5,2"
-                                IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                Style="{StaticResource ToggleButton.Fluent}"
-                                Command="{Binding }">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Image
-                                        Width="40"
-                                        Height="40"
-                                        Margin="0,0,15,0"
-                                        Source="{Binding PreviewImagePath}" />
-                                    <TextBlock
-                                        Grid.Column="1"
-                                        VerticalAlignment="Center"
-                                        FontSize="15"
-                                        FontWeight="Normal"
-                                        Text="{Binding Name}" />
-                                </Grid>
-                            </ToggleButton>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <!--  임시 헤더 스타잉  -->
+                        <ItemsControl.GroupStyle>
+                            <GroupStyle>
+                                <GroupStyle.HeaderTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Margin="10,10,0,2"
+                                            FontSize="14"
+                                            FontWeight="Bold"
+                                            Foreground="White"
+                                            Text="{Binding Name}" />
+                                    </DataTemplate>
+                                </GroupStyle.HeaderTemplate>
+                            </GroupStyle>
+                        </ItemsControl.GroupStyle>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <ToggleButton
+                                    Margin="3"
+                                    Padding="5"
+                                    HorizontalContentAlignment="Left"
+                                    IsChecked="{Binding IsSelected, Mode=TwoWay}"
+                                    Style="{StaticResource ToggleButton.Fluent}">
+
+                                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                        <Image
+                                            Width="32"
+                                            Height="32"
+                                            Margin="0,0,10,0"
+                                            Source="{Binding PreviewImagePath}" />
+                                        <TextBlock
+                                            VerticalAlignment="Center"
+                                            FontSize="13"
+                                            Text="{Binding Name}" />
+                                    </StackPanel>
+                                </ToggleButton>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+
+                    </ItemsControl>
+                </ScrollViewer>
             </StackPanel>
         </Border>
+        <!--#endregion-->
+
     </Grid>
 </UserControl>

@@ -12,17 +12,17 @@
     mc:Ignorable="d">
     <Grid Background="#FF0A0A0A">
 
-        <!--  TODO : 바인딩 해줘야  -->
+        <!--#region Image Section-->
         <Image
             x:Name="CamImage"
             Margin="10"
             Source="{Binding ImageSource}"
             Stretch="Uniform" />
+        <!--#endregion-->
 
-        <!--  아래쪽 버튼  -->
+        <!--#region Bottom Button Section-->
         <Border
-            Margin="0,0,0,10"
-            Padding="20,10"
+            Padding="5,5"
             HorizontalAlignment="Center"
             VerticalAlignment="Bottom"
             Background="#AA1C1C1C"
@@ -31,29 +31,23 @@
                 <Button
                     x:Name="Button_StartCam"
                     Margin="5"
-                    Content="📹 카메라 켜기"
                     Command="{Binding StartCameraCommand}"
+                    Content="🎥 라이브캠 켜기"
                     Style="{StaticResource Button.Fluent}" />
                 <Button
                     x:Name="Button_StopCam"
                     Margin="5"
-                    Content="📷 카메라 끄기"
-                    IsEnabled="False"
                     Command="{Binding StopCameraCommand}"
+                    Content="⏹️ 라이브캠 끄기"
                     Style="{StaticResource Button.Fluent}" />
                 <Button
                     x:Name="Button_LoadImage"
                     Margin="15,5,5,5"
-                    Content="📂 이미지 열기"
                     Command="{Binding LoadImageCommand}"
-                    Style="{StaticResource Button.Fluent}" />
-                <Button
-                    x:Name="Button_OpenDecoPanel"
-                    Margin="5"
-                    Content="🎨 필터"
-                    Command="{Binding OpenDecoPanelCommand}"
+                    Content="📂 로컬 이미지 열기"
                     Style="{StaticResource Button.Fluent}" />
             </StackPanel>
         </Border>
+        <!--#endregion-->
     </Grid>
 </UserControl>

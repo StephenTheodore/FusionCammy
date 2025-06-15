@@ -10,6 +10,7 @@ namespace FusionCammy.App.Managers
     {
         // TODO : Gallery 기능 추가 시 역할 확장
 
+        private string _lastLoadedImagePath = string.Empty;
 
         public WriteableBitmap LoadBitmap(string path, bool withProcessing)
         {
@@ -38,9 +39,20 @@ namespace FusionCammy.App.Managers
             };
 
             if (dialog.ShowDialog() == true)
+            {
+                _lastLoadedImagePath = dialog.FileName;
                 return LoadBitmap(dialog.FileName, withProcessing);
+            }
             else
                 return null;
+        }
+
+        public WriteableBitmap? LoadLastImage(bool withProcessing)
+        {
+            if (string.IsNullOrEmpty(_lastLoadedImagePath) || !File.Exists(_lastLoadedImagePath))
+                return null;
+
+            return LoadBitmap(_lastLoadedImagePath, withProcessing);
         }
     }
 }

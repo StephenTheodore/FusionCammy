@@ -108,9 +108,9 @@ namespace FusionCammy.App
             string decorationsRoot = "Assets/Decorations";
             var directoryPathes = Directory.GetDirectories(decorationsRoot);
 
+            HashSet<FacePartType> firstPartChecker = [];
             foreach (var directoryPath in directoryPathes)
             {
-
                 var imagePathes = Directory.GetFiles(directoryPath, "*.png");
                 foreach (var imagePath in imagePathes)
                 {
@@ -133,9 +133,9 @@ namespace FusionCammy.App
                     string absoluteFilePath = Path.GetFullPath(imagePath);
 
                     if (partType is FacePartType.Eyes)
-                        decorationManager.Put(assetId, decoFullName, absoluteFilePath, partType, color, scaleX: 1.8d, scaleY: 6d, isSelected: true);
+                        decorationManager.Put(assetId, decoFullName, absoluteFilePath, partType, color, scaleX: 1.8d, scaleY: 4d, firstPartChecker.Add(partType));
                     else
-                        decorationManager.Put(assetId, decoFullName, absoluteFilePath, partType, color, scaleX: 1.5d, scaleY: 1.5d, isSelected: true);
+                        decorationManager.Put(assetId, decoFullName, absoluteFilePath, partType, color, scaleX: 1.6d, scaleY: 1.6d, firstPartChecker.Add(partType));
                 }
             }
         }

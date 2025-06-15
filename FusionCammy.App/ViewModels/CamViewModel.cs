@@ -1,7 +1,9 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FusionCammy.App.Managers;
+using FusionCammy.Core.Models;
 using OpenCvSharp.WpfExtensions;
+using System.ComponentModel;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
@@ -13,7 +15,9 @@ namespace FusionCammy.App.ViewModels
         #region Field
         private readonly ImageProcessingManager _imageProcessingManager;
 
-        private readonly ImageTransferManager _imageStateManager;
+        private readonly ImageTransferManager _imageTransferManager;
+
+        private readonly FunctionViewModel _functionViewModel;
 
         private readonly DispatcherTimer _pollTimer;
         #endregion
@@ -24,11 +28,17 @@ namespace FusionCammy.App.ViewModels
         #endregion
 
         #region Constructor
-        public CamViewModel(ImageProcessingManager imageProcessingManager, ImageTransferManager imageStoreManager)
+        public CamViewModel(ImageProcessingManager imageProcessingManager, ImageTransferManager imageStoreManager, FunctionViewModel functionViewModel)
         {
             _imageProcessingManager = imageProcessingManager;
+            _imageTransferManager = imageStoreManager;
+            _functionViewModel = functionViewModel;
 
-            _imageStateManager = imageStoreManager;
+            foreach (var decoration in functionViewModel.Decorations)
+            {
+                decoration.PropertyChanged -= OnDecorationPropertyChanged;
+                decoration.PropertyChanged += OnDecorationPropertyChanged;
+            }
 
             _pollTimer = new DispatcherTimer
             {
@@ -57,7 +67,7 @@ namespace FusionCammy.App.ViewModels
         {
             _imageProcessingManager.StopLive();
 
-            if (_imageStateManager.LoadBitmapFromDialog(true) is WriteableBitmap bitmap)
+            if (_imageTransferManager.LoadBitmapFromDialog(true) is WriteableBitmap bitmap)
             {
                 bitmap.Freeze();
                 ImageSource = bitmap;
@@ -69,6 +79,20 @@ namespace FusionCammy.App.ViewModels
         {
             // Logic to save an image
             // This could involve opening a save file dialog and saving the current ImageSource to a file
+        }
+
+        private void OnDecorationPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(DecorationInfo.IsSelected))
+            {
+                if (_imageProcessingManager.IsLive)
+                    return;
+                if (_imageTransferManager.LoadLastImage(true) is WriteableBitmap bitmap)
+                {
+                    bitmap.Freeze();
+                    ImageSource = bitmap;
+                }
+            }
         }
 
         private async void OnTick(object? sender, EventArgs e)

@@ -23,6 +23,8 @@ namespace FusionCammy.Core.Services
         public CameraInfo CameraInfo { get; set; } = null!;
 
         public int TargetFrameRate { get; set; } = 30;
+
+        public bool IsLive => CameraInfo.IsStreaming;
         #endregion
 
         #region Event
@@ -32,7 +34,7 @@ namespace FusionCammy.Core.Services
         #region Method
         public async Task StartLive()
         {
-            if (_videoCapture is not null && _videoCapture.IsOpened())
+            if (_videoCapture.IsOpened())
                 return;
 
             bool openSuccess = _videoCapture.Open(CameraInfo.Index, VideoCaptureAPIs.MSMF)
@@ -46,6 +48,8 @@ namespace FusionCammy.Core.Services
             _videoCapture.Set(VideoCaptureProperties.FrameHeight, CameraInfo.Height);
             _taskCancellation = new CancellationTokenSource();
             _acquisitionTask = LiveLoopAsync(_taskCancellation.Token);
+
+            CameraInfo.IsStreaming = true;
         }
 
         public async Task StopLive()
@@ -59,6 +63,8 @@ namespace FusionCammy.Core.Services
             _taskCancellation?.Dispose();
             _acquisitionTask?.Dispose();
             _liveImageBuffer?.Flush();
+
+            CameraInfo.IsStreaming = false;
         }
 
         public async Task TakeSingleFrame()
@@ -135,7 +141,7 @@ namespace FusionCammy.Core.Services
             else
                 isAutoOptionEnabled = isEnable;
 
-            if (_videoCapture is not null && _videoCapture.IsOpened())
+            if (_videoCapture.IsOpened())
             {
                 _videoCapture.Set(VideoCaptureProperties.AutoFocus, isAutoOptionEnabled ? 1 : 0);
                 _videoCapture.Set(VideoCaptureProperties.AutoWB, isAutoOptionEnabled ? 1 : 0);

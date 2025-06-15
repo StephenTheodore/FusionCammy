@@ -3,6 +3,8 @@ using FusionCammy.Core.Models;
 using FusionCammy.Core.Services;
 using OpenCvSharp;
 using System.Windows.Controls;
+using DirectShowLib;
+using System.Runtime.InteropServices;
 
 namespace FusionCammy.App.Managers
 {
@@ -16,15 +18,56 @@ namespace FusionCammy.App.Managers
         #region Property
         public IReadOnlyList<CameraInfo> Cameras => _cameraInfos;
 
+        public bool IsLive => acquisitionService.IsLive;
         #endregion
 
         #region Method
         public void Initialize()
         {
-            // TODO : WebCam 역할 관리 재정립 필오
+            DsDevice[] devices = DsDevice.GetDevicesOfCat(FilterCategory.VideoInputDevice);
+            ICaptureGraphBuilder2 graphBuilder = (ICaptureGraphBuilder2)new CaptureGraphBuilder2();
+            IFilterGraph2 filterGraph = (IFilterGraph2)new FilterGraph();
+            graphBuilder.SetFiltergraph(filterGraph);
 
-            var cam = new CameraInfo(0, "TempCam", 640, 480);
-            _cameraInfos.Add(cam);
+            if (devices.Length == 0)
+            {
+                // 카메라가 없을 때
+                throw new InvalidOperationException("No video input devices found.");
+            }
+
+            foreach (var device in devices)
+            {
+                if (!device.DevicePath.Contains("usb", StringComparison.CurrentCultureIgnoreCase) && !device.Name.Contains("usb", StringComparison.CurrentCultureIgnoreCase))
+                    continue;
+
+                filterGraph.AddSourceFilterForMoniker(device.Mon, null, device.Name, out IBaseFilter sourceFilter);
+
+                // IAMStreamConfig
+                Guid riid = typeof(IAMStreamConfig).GUID;
+                int hr = graphBuilder.FindInterface(PinCategory.Capture, MediaType.Video, sourceFilter, riid, out object config);
+                DsError.ThrowExceptionForHR(hr);
+
+                if (config is IAMStreamConfig streamConfig)
+                {
+                    streamConfig.GetNumberOfCapabilities(out _, out int size);
+                    IntPtr ptr = Marshal.AllocCoTaskMem(size);
+
+                    AMMediaType mediaType;
+                    streamConfig.GetStreamCaps(0, out mediaType, ptr); // 첫 번째 해상도
+
+                    var videoInfo = (VideoInfoHeader)Marshal.PtrToStructure(mediaType.formatPtr, typeof(VideoInfoHeader))!;
+                    int width = videoInfo.BmiHeader.Width;
+                    int height = videoInfo.BmiHeader.Height;
+
+                    Marshal.FreeCoTaskMem(ptr);
+                    DsUtils.FreeAMMediaType(mediaType);
+
+                    // USB 카메라 1개만 사용
+                    var cam = new CameraInfo(0, device.Name, width, height);
+                    _cameraInfos.Add(cam);
+                    break;
+                }
+            }
         }
 
         // TODO : ComboBox 커맨드랑 Binding, 바꾸는 경우 라이브 관리 어떻게?
