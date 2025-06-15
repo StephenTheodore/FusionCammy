@@ -22,7 +22,8 @@ jobs:
         dotnet-version: 8.0.x
 
     - name: List files for debugging
-      run: dir /s
+      run: dir -Recurse
+      shell: pwsh
 
     - name: Restore NuGet packages
       run: dotnet restore FusionCammy.sln
