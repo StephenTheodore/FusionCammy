@@ -8,6 +8,7 @@
     <UseWPF>true</UseWPF>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Platforms>AnyCPU;x64</Platforms>
+    <ApplicationIcon>FusionCammy.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,6 +28,10 @@
     <Page Remove="Assets\Decorations\Ears\**" />
     <Page Remove="Assets\Decorations\Face\**" />
     <Page Remove="Assets\Decorations\Head\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="FusionCammy.ico" />
   </ItemGroup>
 
   <ItemGroup>
