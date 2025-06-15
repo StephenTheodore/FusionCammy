@@ -1,8 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FusionCammy.App.Managers;
-using FusionCammy.Core.Models;
-using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -13,18 +11,24 @@ namespace FusionCammy.App.ViewModels
     public partial class CamViewModel : ObservableObject
     {
         #region Field
-        private readonly ImageProcessingManager _cameraManager;
+        private readonly ImageProcessingManager _imageProcessingManager;
+
+        private readonly ImageTransferManager _imageStateManager;
 
         private readonly DispatcherTimer _pollTimer;
+        #endregion
 
+        #region Property
         [ObservableProperty]
         private ImageSource? imageSource;
         #endregion
 
         #region Constructor
-        public CamViewModel(ImageProcessingManager cameraManager)
+        public CamViewModel(ImageProcessingManager imageProcessingManager, ImageTransferManager imageStoreManager)
         {
-            _cameraManager = cameraManager;
+            _imageProcessingManager = imageProcessingManager;
+
+            _imageStateManager = imageStoreManager;
 
             _pollTimer = new DispatcherTimer
             {
@@ -32,10 +36,6 @@ namespace FusionCammy.App.ViewModels
             };
             _pollTimer.Tick += OnTick;
             _pollTimer.Start();
-
-            // 테스트 코드
-            _cameraManager.Initialize();
-            _cameraManager.ChangeSelectedCamera(0);
         }
         #endregion
 
@@ -43,20 +43,25 @@ namespace FusionCammy.App.ViewModels
         [RelayCommand]
         private void StartCamera()
         {
-            _cameraManager.StartLive();
+            _imageProcessingManager.StartLive();
         }
 
         [RelayCommand]
         private void StopCamera()
         {
-            _cameraManager.StopLive();
+            _imageProcessingManager.StopLive();
         }
 
         [RelayCommand]
         private void LoadImage()
         {
-            // Logic to load an image
-            // This could involve opening a file dialog and loading an image into the ImageSource
+            _imageProcessingManager.StopLive();
+
+            if (_imageStateManager.LoadBitmapFromDialog(true) is WriteableBitmap bitmap)
+            {
+                bitmap.Freeze();
+                ImageSource = bitmap;
+            }
         }
 
         [RelayCommand]
@@ -68,7 +73,7 @@ namespace FusionCammy.App.ViewModels
 
         private async void OnTick(object? sender, EventArgs e)
         {
-            var processedFrame = await _cameraManager.TryGetFrameDataAsync();
+            var processedFrame = await _imageProcessingManager.TryGetFrameDataAsync();
             if (processedFrame is not null)
             {
                 if (ImageSource is null ||

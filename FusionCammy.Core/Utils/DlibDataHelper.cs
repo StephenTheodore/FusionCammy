@@ -5,7 +5,7 @@ namespace FusionCammy.Core.Utils
 {
     public static class DlibDataHelper
     {
-        /// <summary>Extracts landmarks from a FullObjectDetection object using the 68-point predictor format.</summary>
+        /// <summary>Extracts landmarks from a FullObjectDetection object using the 68-point predictor format.</summary>  
         public static Dictionary<FacePartType, List<OpenCvSharp.Point>> ExtractLandmarksFrom68PointPredictor(this FullObjectDetection detection)
         {
             var result = new Dictionary<FacePartType, List<OpenCvSharp.Point>>();
@@ -15,10 +15,13 @@ namespace FusionCammy.Core.Utils
                 { FacePartType.RightEye,   Enumerable.Range(42, 6).ToList() },
                 { FacePartType.LeftBrow,   Enumerable.Range(17, 5).ToList() },
                 { FacePartType.RightBrow,  Enumerable.Range(22, 5).ToList() },
-                { FacePartType.Nose,       Enumerable.Range(27, 4).ToList() },
+                { FacePartType.Nose,       Enumerable.Range(29, 7).ToList() },
                 { FacePartType.OuterMouth, Enumerable.Range(48, 12).ToList() },
                 { FacePartType.InnerMouth, Enumerable.Range(60, 8).ToList() },
                 { FacePartType.Jawline,    Enumerable.Range(0, 17).ToList() },
+
+                { FacePartType.Eyes,       Enumerable.Range(36, 12).ToList() },//new List<int> { 36, 30, 45 } },
+                { FacePartType.Mouth,      Enumerable.Range(48, 20).ToList() }
             };
 
             foreach (var map in mapIndices)

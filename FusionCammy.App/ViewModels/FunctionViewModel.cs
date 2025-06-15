@@ -2,39 +2,27 @@
 using CommunityToolkit.Mvvm.Input;
 using FusionCammy.App.Managers;
 using FusionCammy.Core.Managers;
+using FusionCammy.Core.Models;
 
 namespace FusionCammy.App.ViewModels
 {
-    public partial class FunctionViewModel : ObservableObject
+    public partial class FunctionViewModel(ImageProcessingManager imageProcessingManager, AssetManager assetManager, DecorationManager decorationManager) : ObservableObject
     {
-        #region Field
-        private readonly ImageProcessingManager _cameraManager;
-        #endregion
-
-        #region Constructor
-        public FunctionViewModel(ImageProcessingManager cameraManager)
-        {
-            _cameraManager = cameraManager;
-        }
+        #region Property
+        public IReadOnlyCollection<DecorationInfo> Decorations => decorationManager.Decorations;
         #endregion
 
         #region Method
         [RelayCommand]
         private void StartCamera()
         {
-            _cameraManager.StartLive();
+            imageProcessingManager.StartLive();
         }
 
         [RelayCommand]
         private void StopCamera()
         {
-            _cameraManager.StopLive();
-        }
-
-        [RelayCommand]
-        private void LoadImage()
-        {
-            // TODO : 이미지 로딩
+            imageProcessingManager.StopLive();
         }
 
         [RelayCommand]

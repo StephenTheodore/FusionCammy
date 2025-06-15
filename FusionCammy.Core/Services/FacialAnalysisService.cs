@@ -15,9 +15,11 @@ namespace FusionCammy.Core.Services
         private readonly FrontalFaceDetector _faceDetector = Dlib.GetFrontalFaceDetector();
 
         /// <summary>Performs facial analysis on the provided image and returns face information if detected.</summary>
-        public async Task<FaceInfo?> AnalyzeAsync(Mat image)
+        public async Task<List<FaceInfo>> AnalyzeAsync(Mat image)
         {
             ArgumentNullException.ThrowIfNull(image);
+
+            List<FaceInfo> faceInfos = [];
 
             byte[] dataArray = new byte[image.Width * image.Height * image.ElemSize()];
             Marshal.Copy(image.Data, dataArray, 0, dataArray.Length);
@@ -25,18 +27,19 @@ namespace FusionCammy.Core.Services
             using var dlibImage = Dlib.LoadImageData<BgrPixel>(dataArray, (uint)image.Height, (uint)image.Width, (uint)image.Step());
 
             var faceRects = _faceDetector.Operator(dlibImage);
-            if (faceRects.Length == 0)
-                return null;
 
-            var faceRect = faceRects[0];
-            var shape = _shapePredictor.Detect(dlibImage, faceRect);
-            var faceInfo = new FaceInfo
+            foreach (var faceRect in faceRects)
             {
-                Bounds = faceRect.ConvertToCvRect(),
-                Anchors = shape.ExtractLandmarksFrom68PointPredictor(),
-            };
+                var shape = _shapePredictor.Detect(dlibImage, faceRect);
+                var faceInfo = new FaceInfo
+                {
+                    Bounds = faceRect.ConvertToCvRect(),
+                    Anchors = shape.ExtractLandmarksFrom68PointPredictor(),
+                };
+                faceInfos.Add(faceInfo);
+            }
 
-            return faceInfo;
+            return faceInfos;
         }
     }
 }

@@ -2,6 +2,8 @@
 using FusionCammy.Core.Models;
 using FusionCammy.Core.Utils;
 using OpenCvSharp;
+using System.Diagnostics;
+using System.Runtime.ExceptionServices;
 
 namespace FusionCammy.Core.Services
 {
@@ -16,6 +18,8 @@ namespace FusionCammy.Core.Services
                 var anchorPoints = faceInfo?.Anchors[decoration.FacePartType] ?? [];
                 Point? anchorPoint = decoration.FacePartType switch
                 {
+                    FacePartType.Nose or
+                    FacePartType.Mouth or
                     FacePartType.LeftEye or
                     FacePartType.RightEye or
                     FacePartType.LeftBrow or
@@ -23,22 +27,26 @@ namespace FusionCammy.Core.Services
                     FacePartType.OuterMouth or
                     FacePartType.InnerMouth => OpenCvHelper.GetCenterPoint(anchorPoints),
 
-                    FacePartType.Nose => anchorPoints?.LastOrDefault(),
+                    FacePartType.Eyes => new Point(OpenCvHelper.GetCenterPoint(faceInfo?.Anchors[FacePartType.Nose]).X, OpenCvHelper.GetCenterPoint(anchorPoints).Y),
+                    //FacePartType.Nose => anchorPoints[0],   // NoseTip Index : 30
 
-                    FacePartType.Jawline => OpenCvHelper.GetCenterPoint(anchorPoints.GetRange(8, 3) ?? []),
+                    FacePartType.Jawline => OpenCvHelper.GetCenterPoint(anchorPoints[8..11] ?? []),
 
                     _ => throw new NotImplementedException(),
                 };
 
-                var firstPoint = anchorPoints?.FirstOrDefault();
-                var lastPoint = anchorPoints?.LastOrDefault();
-                var partSize = firstPoint.HasValue && lastPoint.HasValue ? firstPoint.Value.DistanceTo(lastPoint.Value) : 1d;
-                var drawingScale = partSize / Math.Max(decorationImage.Width, decorationImage.Height);
+                var partRect = Cv2.MinAreaRect(anchorPoints);
+                partRect.Size = new Size2f(
+                    Math.Max(partRect.Size.Width, partRect.Size.Height) * decoration.ScaleX,
+                    Math.Min(partRect.Size.Width, partRect.Size.Height) * decoration.ScaleY);
+                partRect.Angle = OpenCvHelper.GetAngleBetween(anchorPoints.MinBy(point => point.X), anchorPoints.MaxBy(point => point.X));
 
-                if (anchorPoint.HasValue && drawingScale > double.Epsilon)
+                Debug.WriteLine($"{decoration.FacePartType} Angle {partRect.Angle}");
+
+                if (anchorPoint.HasValue)
                 {
-                    var targetSize = new Size(decorationImage.Width * decoration.scale * drawingScale, decorationImage.Height * decoration.scale * drawingScale);
-                    frameData.OverlayWithAlpha(decorationImage, anchorPoint.Value, targetSize);
+                    partRect.Center = new Point2f(anchorPoint.Value.X, anchorPoint.Value.Y);
+                    frameData.OverlayWithAlpha(decorationImage, anchorPoint.Value, partRect);
                 }
             }
         }

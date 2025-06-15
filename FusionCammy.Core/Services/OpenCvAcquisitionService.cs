@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace FusionCammy.Core.Services
 {
-    public class AcquisitionService
+    public class OpenCvAcquisitionService
     {
         #region Field
         private readonly VideoCapture _videoCapture = new();
@@ -32,6 +32,9 @@ namespace FusionCammy.Core.Services
         #region Method
         public async Task StartLive()
         {
+            if (_videoCapture is not null && _videoCapture.IsOpened())
+                return;
+
             bool openSuccess = _videoCapture.Open(CameraInfo.Index, VideoCaptureAPIs.MSMF)
                 || _videoCapture.Open(CameraInfo.Index, VideoCaptureAPIs.DSHOW)
                 || _videoCapture.Open(CameraInfo.Index, VideoCaptureAPIs.ANY);

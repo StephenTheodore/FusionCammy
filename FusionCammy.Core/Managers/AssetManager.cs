@@ -2,9 +2,14 @@
 
 namespace FusionCammy.Core.Managers
 {
-    public partial class AssetManager
+    public class AssetManager
     {
         private readonly Dictionary<string, Mat> images = [];
+
+        public void Initialize()
+        {
+            throw new NotImplementedException();
+        }
 
         public void RegisterImage (string key, string imagePath)
         {

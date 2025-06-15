@@ -68,31 +68,20 @@
                         Content="📷 카메라 끄기"
                         Style="{StaticResource Button.Fluent}" />
                 </Grid>
-                <Button
-                    Name="Button_LoadImage"
-                    Margin="5,0,5,5"
-                    Command="{Binding LoadImageCommand}"
-                    Content="📂 이미지 열기"
-                    Style="{StaticResource Button.Fluent}" />
-
-                <Button
-                    Name="Button_SaveImage"
-                    Margin="5,0,5,5"
-                    Command="{Binding SaveImageCommand}"
-                    Content="✔️ 이미지 저장"
-                    Style="{StaticResource Button.Fluent}" />
 
                 <TextBlock Style="{StaticResource TextBlock.Section.Header}" Text="장식!" />
                 <ItemsControl
                     x:Name="DecoItemsList"
                     Background="Transparent"
-                    BorderThickness="0">
+                    BorderThickness="0"
+                    ItemsSource="{Binding Decorations}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <ToggleButton
                                 Margin="5,2"
                                 IsChecked="{Binding IsSelected, Mode=TwoWay}"
-                                Style="{StaticResource ToggleButton.Fluent}">
+                                Style="{StaticResource ToggleButton.Fluent}"
+                                Command="{Binding }">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
@@ -113,11 +102,8 @@
                             </ToggleButton>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
-
-                    <!--  TODO : 애셋 바인딩 여기~~~~~~~~~~~~~~~~~~~  <d:ItemsControl.ItemsSource /> -->
-
-
                 </ItemsControl>
+                
             </StackPanel>
         </Border>
     </Grid>

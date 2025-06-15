@@ -13,15 +13,19 @@
   <ItemGroup>
     <Compile Remove="Assets\Decorations\Cheeks\**" />
     <Compile Remove="Assets\Decorations\Ears\**" />
+    <Compile Remove="Assets\Decorations\Face\**" />
     <Compile Remove="Assets\Decorations\Head\**" />
     <EmbeddedResource Remove="Assets\Decorations\Cheeks\**" />
     <EmbeddedResource Remove="Assets\Decorations\Ears\**" />
+    <EmbeddedResource Remove="Assets\Decorations\Face\**" />
     <EmbeddedResource Remove="Assets\Decorations\Head\**" />
     <None Remove="Assets\Decorations\Cheeks\**" />
     <None Remove="Assets\Decorations\Ears\**" />
+    <None Remove="Assets\Decorations\Face\**" />
     <None Remove="Assets\Decorations\Head\**" />
     <Page Remove="Assets\Decorations\Cheeks\**" />
     <Page Remove="Assets\Decorations\Ears\**" />
+    <Page Remove="Assets\Decorations\Face\**" />
     <Page Remove="Assets\Decorations\Head\**" />
   </ItemGroup>
 
@@ -38,7 +42,6 @@
   <ItemGroup>
     <Folder Include="Assets\Decorations\Eyes\" />
     <Folder Include="Assets\Decorations\Mouth\" />
-    <Folder Include="Assets\Decorations\Face\" />
     <Folder Include="Assets\MlModels\" />
     <Folder Include="Assets\UI\Icons\" />
     <Folder Include="Assets\UI\NewFolder\" />
@@ -49,7 +52,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Assets\Decorations\Eyes\Eyes_Black_PixelGlasses.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\Decorations\Eyes\Eyes_Red_Glasses.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\Decorations\Mouth\Mouth_Red_GlossyLips.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Assets\Decorations\Nose\Ball_Red.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\Decorations\Nose\Nose_Red_Ball.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Assets\MlModels\shape_predictor_68_face_landmarks.dat">

@@ -9,8 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Media;
 
 namespace FusionCammy.App
 {
@@ -38,6 +38,7 @@ namespace FusionCammy.App
             var serviceCollection = new ServiceCollection();
 
             Services = BuildServiceProvider(serviceCollection);
+            InitializeDecorationAssets();
             InitializeEssentialComponents();
 
             base.OnStartup(e);
@@ -55,13 +56,14 @@ namespace FusionCammy.App
 
             #region Core.Managers
             services.AddSingleton<ImageProcessingManager>();
+            services.AddSingleton<ImageTransferManager>();
 
             services.AddSingleton<AssetManager>();
             services.AddSingleton<DecorationManager>();
             #endregion
 
             #region Core.Services
-            services.AddSingleton<AcquisitionService>();
+            services.AddSingleton<OpenCvAcquisitionService>();
             services.AddSingleton<DecorationService>();
             services.AddSingleton<FacialAnalysisService>();
             #endregion
@@ -98,17 +100,52 @@ namespace FusionCammy.App
             }
         }
 
-        private static void InitializeEssentialComponents()
+        private static void InitializeDecorationAssets()
         {
             var assetManager = Services.GetRequiredService<AssetManager>();
-            // TODO : 전체 애셋 로딩, 분류 자동화
-            assetManager.RegisterImage($"{Colors.Red}_{FacePartType.Nose}_Ball", @"Assets\Decorations\Nose\Ball_Red.png");
-
             var decorationManager = Services.GetRequiredService<DecorationManager>();
-            decorationManager.Put($"{Colors.Red}_{FacePartType.Nose}_Ball", FacePartType.Nose, 1.5d, true);
 
+            string decorationsRoot = "Assets/Decorations";
+            var directoryPathes = Directory.GetDirectories(decorationsRoot);
+
+            foreach (var directoryPath in directoryPathes)
+            {
+
+                var imagePathes = Directory.GetFiles(directoryPath, "*.png");
+                foreach (var imagePath in imagePathes)
+                {
+                    var fileName = Path.GetFileNameWithoutExtension(imagePath);
+                    var assetId = fileName;
+
+                    var match = Regex.Match(fileName, @"^(?<part>\w+)_(?<color>\w+)_(?<name>.+)$");
+                    if (!match.Success)
+                        continue;
+
+                    if (!Enum.TryParse(match.Groups["part"].Value, ignoreCase: true, out FacePartType partType))
+                        continue;
+                    if (!Enum.TryParse(match.Groups["color"].Value, ignoreCase: true, out DecorationColor color))
+                        continue;
+
+                    assetManager.RegisterImage(assetId, imagePath);
+
+                    string decoName = match.Groups["name"].Value;
+                    string decoFullName = $"{decoName} ({color})";
+                    string absoluteFilePath = Path.GetFullPath(imagePath);
+
+                    if (partType is FacePartType.Eyes)
+                        decorationManager.Put(assetId, decoFullName, absoluteFilePath, partType, color, scaleX: 1.8d, scaleY: 6d, isSelected: true);
+                    else
+                        decorationManager.Put(assetId, decoFullName, absoluteFilePath, partType, color, scaleX: 1.5d, scaleY: 1.5d, isSelected: true);
+                }
+            }
+        }
+
+
+        private static void InitializeEssentialComponents()
+        {
             var imageProcessingManager = Services.GetRequiredService<ImageProcessingManager>();
             imageProcessingManager.Initialize();
+            imageProcessingManager.ChangeSelectedCamera(0);
         }
         #endregion
     }

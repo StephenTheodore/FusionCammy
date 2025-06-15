@@ -20,11 +20,13 @@
         RightEye,
         LeftBrow,
         RightBrow,
+        Eyes,
 
         Nose,
 
         OuterMouth,
         InnerMouth,
+        Mouth,
 
         Jawline,
     }

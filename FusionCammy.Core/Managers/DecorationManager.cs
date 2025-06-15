@@ -12,6 +12,8 @@ namespace FusionCammy.Core.Managers
         #endregion
 
         #region Property
+        public IReadOnlyCollection<DecorationInfo> Decorations => _decorations.Values;
+
         public IReadOnlyCollection<DecorationInfo> SelectedDecorations => _selectedDecorations;
         #endregion
 
@@ -29,31 +31,35 @@ namespace FusionCammy.Core.Managers
                 _selectedDecorations.Remove(decorationInfo);
         }
 
-        public void Put(string id, FacePartType facePartType, double scale = 1d, bool isSelected = false)
+        public void Put(string id, string? name, string? previewPath, FacePartType facePartType, DecorationColor color, double scaleX, double scaleY, bool isSelected = false)
         {
             if (string.IsNullOrEmpty(id))
                 throw new ArgumentException("Decoration ID cannot be null or empty.");
 
             var decorationInfo = new DecorationInfo
             {
+                Name = name,
+                PreviewImagePath = previewPath,
                 Id = id,
                 FacePartType = facePartType,
-                scale = scale,
+                Color = color,
+                ScaleX = scaleX,
+                ScaleY = scaleY,
                 IsSelected = isSelected,
             };
 
             Put(decorationInfo);
         }
 
-        public DecorationInfo Get(string key)
+        public DecorationInfo Get(string id)
         {
-            if (string.IsNullOrEmpty(key))
+            if (string.IsNullOrEmpty(id))
                 throw new ArgumentException("Key cannot be null or empty.");
 
-            if (_decorations.TryGetValue(key, out DecorationInfo? info))
+            if (_decorations.TryGetValue(id, out DecorationInfo? info))
                 return info;
             else
-                throw new KeyNotFoundException($"No decoration found for key: {key}");
+                throw new KeyNotFoundException($"No decoration found for {id}");
         }
 
 

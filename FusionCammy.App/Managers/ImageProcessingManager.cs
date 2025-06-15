@@ -1,11 +1,13 @@
-﻿using FusionCammy.Core.Models;
+﻿using FusionCammy.Core.Managers;
+using FusionCammy.Core.Models;
 using FusionCammy.Core.Services;
 using OpenCvSharp;
+using System.Windows.Controls;
 
 namespace FusionCammy.App.Managers
 {
     // TODO : CameraManager 역할 추가에 따른 이름 변경 고려
-    public class ImageProcessingManager(AcquisitionService acquisitionService, FacialAnalysisService facialAnalysisService, DecorationService decorationService)
+    public class ImageProcessingManager(OpenCvAcquisitionService acquisitionService, FacialAnalysisService facialAnalysisService, DecorationService decorationService)
     {
         #region Field
         private readonly List<CameraInfo> _cameraInfos = [];
@@ -19,8 +21,7 @@ namespace FusionCammy.App.Managers
         #region Method
         public void Initialize()
         {
-            // TODO : OpenCV 모든 카메라 정보 가져오기
-            // TODO : 카메라가 하나도 없는 경우 예외처리
+            // TODO : WebCam 역할 관리 재정립 필오
 
             var cam = new CameraInfo(0, "TempCam", 640, 480);
             _cameraInfos.Add(cam);
@@ -47,34 +48,27 @@ namespace FusionCammy.App.Managers
             Task.Run(acquisitionService.StopLive);
         }
 
+        [Obsolete("Move to ImageStateManager")]
         public async Task<ProcessedFrame?> TryGetFrameDataAsync()
         {
             if (!acquisitionService.TryGetFrameData(out Mat? frameData) || frameData is null)
                 return null;
 
-            var processedFrame = new ProcessedFrame(frameData);
-            var faceInfo = await facialAnalysisService.AnalyzeAsync(frameData);
+            return await ProcessImageAsync(frameData);
+        }
 
-#if DEBUG
-            frameData.Rectangle(faceInfo?.Bounds ?? new Rect(0, 0, 0, 0), Scalar.Red, 2);
-            foreach (FacePartType facePart in Enum.GetValues(typeof(FacePartType)))
+        public async Task<ProcessedFrame?> ProcessImageAsync(Mat orgImage)
+        {
+            var processedFrame = new ProcessedFrame(orgImage);
+            var faceInfos = await facialAnalysisService.AnalyzeAsync(orgImage);
+
+            foreach (var faceInfo in faceInfos)
             {
-                if(faceInfo?.Anchors is null || !faceInfo.Anchors.ContainsKey(facePart))
-                    continue;
-
-                foreach (var anchorPoint in faceInfo?.Anchors[facePart] ?? [])
-                    frameData.Circle(anchorPoint, 3, Scalar.FromDouble(16 * (int)facePart), -1);
-            }
-#endif
-
-            if (faceInfo is not null)
-            {
-                decorationService.Decorate(frameData, faceInfo);
+                decorationService.Decorate(orgImage, faceInfo);
                 processedFrame.Put(faceInfo);
-                acquisitionService.SetCaptureConfigurations(false);
             }
-            else
-                acquisitionService.SetCaptureConfigurations(true);
+
+            acquisitionService.SetCaptureConfigurations(faceInfos.Count > 0);
 
             return processedFrame;
         }
