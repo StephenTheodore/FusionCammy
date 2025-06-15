@@ -11,43 +11,46 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
-    
+
     steps:
-    - name: Checkout
+    - name: Checkout repository
       uses: actions/checkout@v4
-    
-    - name: Setup .NET 8
+
+    - name: Setup .NET 8 SDK
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
-    
-    - name: Restore
-      run: dotnet restore FusionCammy.sln
-      working-directory: FusionCammy
-    
+
+    - name: Restore NuGet packages
+      run: dotnet restore FusionCammy/FusionCammy.sln
+
     - name: Build App Project (x64)
-      run: dotnet build FusionCammy.App/FusionCammy.App.csproj -c Release -p:Platform=x64 --no-restore
-      working-directory: FusionCammy
-    
+      run: dotnet build FusionCammy/FusionCammy.App/FusionCammy.App.csproj -c Release -p:Platform=x64 --no-restore
+
     - name: Zip Executable and Required Files
       run: |
-        $outputDir = "FusionCammy.App\bin\x64\Release\net8.0-windows10.0.17763.0"
+        $outputDir = "FusionCammy/FusionCammy.App/bin/x64/Release/net8.0-windows10.0.17763.0"
         $zipPath = "FusionCammy.App.zip"
-    
-        $includeExt = @("*.exe", "*.dll", "*.config", "*.json", "*.pdb")
+
+        # 포함할 확장자
+        $includeExt = @("*.exe", "*.dll", "*.json", "*.config", "*.pdb")
+
+        # 콘텐츠 폴더 (필요 시 추가 가능)
         $includeDirs = @("Assets", "Resources")
-    
+
+        # 기본 파일 수집
         $files = Get-ChildItem -Path $outputDir -Include $includeExt -Recurse -File
+
+        # 폴더 내 파일 포함
         foreach ($dir in $includeDirs) {
           $fullPath = Join-Path $outputDir $dir
           if (Test-Path $fullPath) {
             $files += Get-ChildItem -Path $fullPath -Recurse -File
           }
         }
-    
+
         Compress-Archive -Path $files.FullName -DestinationPath $zipPath -Force
-      working-directory: FusionCammy
-    
+
     - name: Upload to GitHub Release
       if: success()
       uses: softprops/action-gh-release@v1
@@ -55,6 +58,6 @@ jobs:
         name: Release ${{ github.ref_name }}
         tag_name: ${{ github.ref_name }}
         files: |
-          FusionCammy/FusionCammy.App.zip
+          FusionCammy.App.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
