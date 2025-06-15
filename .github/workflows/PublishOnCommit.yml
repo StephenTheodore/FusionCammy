@@ -11,41 +11,43 @@ permissions:
 jobs:
   build:
     runs-on: windows-latest
-
+    
     steps:
-    - name: Checkout repository
+    - name: Checkout
       uses: actions/checkout@v4
-
-    - name: Setup .NET 8 SDK
+    
+    - name: Setup .NET 8
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
-
-    - name: Restore packages
+    
+    - name: Restore
       run: dotnet restore FusionCammy.sln
-
+      working-directory: FusionCammy
+    
     - name: Build App Project (x64)
       run: dotnet build FusionCammy.App/FusionCammy.App.csproj -c Release -p:Platform=x64 --no-restore
-
+      working-directory: FusionCammy
+    
     - name: Zip Executable and Required Files
       run: |
-        $outputDir = "FusionCammy.App\bin\Release\net8.0-windows"
+        $outputDir = "FusionCammy.App\bin\x64\Release\net8.0-windows10.0.17763.0"
         $zipPath = "FusionCammy.App.zip"
-
+    
         $includeExt = @("*.exe", "*.dll", "*.config", "*.json", "*.pdb")
         $includeDirs = @("Assets", "Resources")
-
+    
         $files = Get-ChildItem -Path $outputDir -Include $includeExt -Recurse -File
-
         foreach ($dir in $includeDirs) {
           $fullPath = Join-Path $outputDir $dir
           if (Test-Path $fullPath) {
             $files += Get-ChildItem -Path $fullPath -Recurse -File
           }
         }
-
+    
         Compress-Archive -Path $files.FullName -DestinationPath $zipPath -Force
-
+      working-directory: FusionCammy
+    
     - name: Upload to GitHub Release
       if: success()
       uses: softprops/action-gh-release@v1
@@ -53,6 +55,6 @@ jobs:
         name: Release ${{ github.ref_name }}
         tag_name: ${{ github.ref_name }}
         files: |
-          FusionCammy.App.zip
+          FusionCammy/FusionCammy.App.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
