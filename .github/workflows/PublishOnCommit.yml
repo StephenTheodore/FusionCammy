@@ -21,40 +21,17 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
-    - name: List files for debugging
-      run: dir -Recurse
-      shell: pwsh
-
     - name: Restore NuGet packages
       run: dotnet restore FusionCammy.sln
 
-    - name: Build App Project (x64)
-      run: dotnet build FusionCammy.App/FusionCammy.App.csproj -c Release -p:Platform=x64 --no-restore
+    # Build 대신 Publish 사용
+    - name: Publish App Project (x64)
+      run: dotnet publish FusionCammy.App/FusionCammy.App.csproj -c Release -p:Platform=x64 -o ./publish
 
-    - name: Zip Executable and Required Files
-      run: |
-        $outputDir = "FusionCammy.App/bin/x64/Release/net8.0-windows10.0.17763.0"
-        $zipPath = "FusionCammy.App.zip"
-
-        # 포함할 확장자
-        $includeExt = @("*.exe", "*.dll", "*.json", "*.config", "*.pdb")
-
-        # 콘텐츠 폴더 (필요 시 추가 가능)
-        $includeDirs = @("Assets", "Resources")
-
-        # 기본 파일 수집
-        $files = Get-ChildItem -Path $outputDir -Include $includeExt -Recurse -File
-
-        # 폴더 내 파일 포함
-        foreach ($dir in $includeDirs) {
-          $fullPath = Join-Path $outputDir $dir
-          if (Test-Path $fullPath) {
-            $files += Get-ChildItem -Path $fullPath -Recurse -File
-          }
-        }
-
-        Compress-Archive -Path $files.FullName -DestinationPath $zipPath -Force
-
+    - name: Zip Published Artifacts
+      working-directory: ./publish
+      run: Compress-Archive -Path ".\*" -DestinationPath "..\FusionCammy.App.zip" -Force
+      
     - name: Upload to GitHub Release
       if: success()
       uses: softprops/action-gh-release@v1
