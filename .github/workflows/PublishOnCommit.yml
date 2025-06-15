@@ -21,25 +21,38 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
-    - name: Restore and Build solution
-      run: |
-        dotnet restore FusionCammy.sln
-        dotnet build FusionCammy.sln -c Release
+    - name: Restore packages
+      run: dotnet restore FusionCammy.sln
 
-    - name: Zip All Output (exe + assets)
+    - name: Build App Project (x64)
+      run: dotnet build FusionCammy.App/FusionCammy.App.csproj -c Release -p:Platform=x64 --no-restore
+
+    - name: Zip Executable and Required Files
       run: |
-        $buildOutput = Get-ChildItem -Path . -Recurse -Directory | Where-Object { $_.FullName -like '*\bin\Release\net8.0-windows*' }
-        foreach ($folder in $buildOutput) {
-          $zipPath = Join-Path $folder.Parent.Parent.FullName "FusionCammy.zip"
-          Compress-Archive -Path "$($folder.FullName)\*" -DestinationPath $zipPath -Force
+        $outputDir = "FusionCammy.App\bin\Release\net8.0-windows"
+        $zipPath = "FusionCammy.App.zip"
+
+        $includeExt = @("*.exe", "*.dll", "*.config", "*.json", "*.pdb")
+        $includeDirs = @("Assets", "Resources")
+
+        $files = Get-ChildItem -Path $outputDir -Include $includeExt -Recurse -File
+
+        foreach ($dir in $includeDirs) {
+          $fullPath = Join-Path $outputDir $dir
+          if (Test-Path $fullPath) {
+            $files += Get-ChildItem -Path $fullPath -Recurse -File
+          }
         }
 
+        Compress-Archive -Path $files.FullName -DestinationPath $zipPath -Force
+
     - name: Upload to GitHub Release
+      if: success()
       uses: softprops/action-gh-release@v1
       with:
         name: Release ${{ github.ref_name }}
         tag_name: ${{ github.ref_name }}
         files: |
-          **/FusionCammy.zip
+          FusionCammy.App.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
