@@ -29,11 +29,11 @@ jobs:
       run: dotnet restore FusionCammy.sln
 
     - name: Build App Project (x64)
-      run: dotnet build FusionCammy/FusionCammy.App/FusionCammy.App.csproj -c Release -p:Platform=x64 --no-restore
+      run: dotnet build FusionCammy.App/FusionCammy.App.csproj -c Release -p:Platform=x64 --no-restore
 
     - name: Zip Executable and Required Files
       run: |
-        $outputDir = "FusionCammy/FusionCammy.App/bin/x64/Release/net8.0-windows10.0.17763.0"
+        $outputDir = "FusionCammy.App/bin/x64/Release/net8.0-windows10.0.17763.0"
         $zipPath = "FusionCammy.App.zip"
 
         # 포함할 확장자
