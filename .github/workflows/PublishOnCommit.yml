@@ -21,8 +21,11 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
+    - name: List files for debugging
+      run: dir /s
+
     - name: Restore NuGet packages
-      run: dotnet restore FusionCammy/FusionCammy.sln
+      run: dotnet restore FusionCammy.sln
 
     - name: Build App Project (x64)
       run: dotnet build FusionCammy/FusionCammy.App/FusionCammy.App.csproj -c Release -p:Platform=x64 --no-restore
