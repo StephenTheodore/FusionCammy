@@ -1,4 +1,5 @@
-﻿using FusionCammy.Core.Models;
+﻿using FusionCammy.App.Views;
+using FusionCammy.Core.Models;
 using OpenCvSharp;
 using OpenCvSharp.WpfExtensions;
 using System.IO;
@@ -10,8 +11,13 @@ namespace FusionCammy.App.Managers
     {
         // TODO : Gallery 기능 추가 시 역할 확장
 
-        private string _lastLoadedImagePath = string.Empty;
+        #region Field
+        private Mat? _lastProcessedImage;
 
+        private string _lastLoadedImagePath = string.Empty;
+        #endregion
+
+        #region Method
         public WriteableBitmap LoadBitmap(string path, bool withProcessing)
         {
             if (string.IsNullOrEmpty(path) || !File.Exists(path))
@@ -23,7 +29,11 @@ namespace FusionCammy.App.Managers
                 throw new InvalidDataException("Failed to load image or image is empty.");
 
             if (withProcessing && imageProcessingManager.ProcessImageAsync(mat).Result is ProcessedFrame processedFrame)
+            {
+                _lastProcessedImage?.Dispose();
+                _lastProcessedImage = processedFrame.Image.Clone();
                 return processedFrame.Image.ToWriteableBitmap();
+            }
             else if (mat.Channels() == 3 || mat.Channels() == 4)
                 return mat.ToWriteableBitmap();
             else
@@ -54,5 +64,22 @@ namespace FusionCammy.App.Managers
 
             return LoadBitmap(_lastLoadedImagePath, withProcessing);
         }
+
+        public bool SaveLastProcessedImage(string directoryPath)
+        {
+            if (_lastProcessedImage is null || _lastProcessedImage.IsDisposed)
+            {
+                new MessageWindow($"결과 미리보기가 없어요...\r\n이미지를 먼저 불러와 주세요!").ShowDialog();
+                return false;
+            }
+
+            string imageFilePath = Path.Combine(directoryPath, $"FusionCammy_{DateTime.Now:yyyyMMdd_HHmmss}.png");
+            if (!Directory.Exists(directoryPath))
+                Directory.CreateDirectory(directoryPath);
+
+            Cv2.ImWrite(imageFilePath, _lastProcessedImage);
+            return true;
+        }
+        #endregion
     }
 }

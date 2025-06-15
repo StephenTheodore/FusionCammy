@@ -12,6 +12,26 @@
     mc:Ignorable="d">
     <Grid Background="#FF0A0A0A">
 
+        <!--#region Countdown-->
+        <Grid
+            x:Name="CountdownOverlay"
+            Height="55"
+            VerticalAlignment="Top"
+            Background="#80000000"
+            Visibility="{Binding CountdownVisibility}">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    Style="{StaticResource TextBlock.Section.Body}"
+                    Text="눈을 크게 뜨고 카메라를 바라보세요!" />
+                <TextBlock
+                    HorizontalAlignment="Center"
+                    Style="{StaticResource TextBlock.Content.Title}"
+                    Text="{Binding CountdownSeconds}" />
+            </StackPanel>
+        </Grid>
+        <!--#endregion-->
+
         <!--#region Image Section-->
         <Image
             x:Name="CamImage"
@@ -41,10 +61,28 @@
                     Content="⏹️ 라이브캠 끄기"
                     Style="{StaticResource Button.Fluent}" />
                 <Button
+                    x:Name="Button_CaptureOnce"
+                    Margin="15,5,5,5"
+                    Command="{Binding TimedCaptureCommand}"
+                    Content="🧑🏻 타이머 촬영"
+                    Style="{StaticResource Button.Fluent}" />
+                <Button
+                    x:Name="Button_OpenDirectory"
+                    Margin="5"
+                    Command="{Binding OpenDirectoryCommand}"
+                    Content="📂 저장 위치 열기"
+                    Style="{StaticResource Button.Fluent}" />
+                <Button
                     x:Name="Button_LoadImage"
                     Margin="15,5,5,5"
                     Command="{Binding LoadImageCommand}"
-                    Content="📂 로컬 이미지 열기"
+                    Content="📷 이미지 불러오기"
+                    Style="{StaticResource Button.Fluent}" />
+                <Button
+                    x:Name="Button_SaveImage"
+                    Margin="5"
+                    Command="{Binding SaveImageCommand}"
+                    Content="📥 결과 저장"
                     Style="{StaticResource Button.Fluent}" />
             </StackPanel>
         </Border>

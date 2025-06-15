@@ -60,7 +60,7 @@
 
                 <TextBlock Style="{StaticResource TextBlock.Section.Header}" Text="Decoration 🎉" />
 
-                <ScrollViewer Height="420" VerticalScrollBarVisibility="Auto">
+                <ScrollViewer Height="Auto" VerticalScrollBarVisibility="Auto">
                     <ItemsControl
                         Background="Transparent"
                         BorderThickness="0"

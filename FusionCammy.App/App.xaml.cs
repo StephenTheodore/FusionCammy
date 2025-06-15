@@ -145,7 +145,6 @@ namespace FusionCammy.App
         {
             var imageProcessingManager = Services.GetRequiredService<ImageProcessingManager>();
             imageProcessingManager.Initialize();
-            imageProcessingManager.ChangeSelectedCamera(0);
         }
         #endregion
     }

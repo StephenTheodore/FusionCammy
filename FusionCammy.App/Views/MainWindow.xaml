@@ -6,8 +6,8 @@
     xmlns:local="clr-namespace:FusionCammy.App.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="FusionCammy"
-    Width="1280"
-    Height="720"
+    Width="1440"
+    Height="920"
     Background="Transparent"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">

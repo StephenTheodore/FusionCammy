@@ -101,7 +101,7 @@ namespace FusionCammy.Core.Services
                     token.ThrowIfCancellationRequested();
 
                     if (_videoCapture.Read(frame) && frame.Data != IntPtr.Zero)
-                        _liveImageBuffer.Put(frame.Clone());
+                        _liveImageBuffer.Put(frame.Flip(FlipMode.Y));
 
                     var processEnd = stopwatch.Elapsed;
                     var elapsed = processEnd - processStart;

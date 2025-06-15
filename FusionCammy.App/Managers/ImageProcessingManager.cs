@@ -8,7 +8,6 @@ using System.Runtime.InteropServices;
 
 namespace FusionCammy.App.Managers
 {
-    // TODO : CameraManager 역할 추가에 따른 이름 변경 고려
     public class ImageProcessingManager(OpenCvAcquisitionService acquisitionService, FacialAnalysisService facialAnalysisService, DecorationService decorationService)
     {
         #region Field
@@ -63,18 +62,11 @@ namespace FusionCammy.App.Managers
                     DsUtils.FreeAMMediaType(mediaType);
 
                     // USB 카메라 1개만 사용
-                    var cam = new CameraInfo(0, device.Name, width, height);
-                    _cameraInfos.Add(cam);
+                    acquisitionService.CameraInfo = new CameraInfo(0, device.Name, width, height);
+                    _cameraInfos.Add(acquisitionService.CameraInfo);
                     break;
                 }
             }
-        }
-
-        // TODO : ComboBox 커맨드랑 Binding, 바꾸는 경우 라이브 관리 어떻게?
-        public void ChangeSelectedCamera(int index)
-        {
-            if (Cameras.First(camera => camera.Index == index) is CameraInfo cameraInfo)
-                acquisitionService.CameraInfo = cameraInfo;
         }
 
         public void StartLive()
@@ -91,7 +83,6 @@ namespace FusionCammy.App.Managers
             Task.Run(acquisitionService.StopLive);
         }
 
-        [Obsolete("Move to ImageStateManager")]
         public async Task<ProcessedFrame?> TryGetFrameDataAsync()
         {
             if (!acquisitionService.TryGetFrameData(out Mat? frameData) || frameData is null)
