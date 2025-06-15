@@ -21,14 +21,10 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
-    - name: Setup MSBuild for .NET Framework projects
-      uses: microsoft/setup-msbuild@v2
-
-    - name: Restore NuGet packages
-      run: dotnet restore FusionCammy.sln
-
-    - name: Build solution
-      run: msbuild FusionCammy.sln /p:Configuration=Release
+    - name: Restore and Build solution
+      run: |
+        dotnet restore FusionCammy.sln
+        dotnet build FusionCammy.sln -c Release
 
     - name: Zip All Output (exe + assets)
       run: |
