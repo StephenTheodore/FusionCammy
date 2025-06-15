@@ -159,6 +159,8 @@ namespace FusionCammy.App.ViewModels
         {
             if (_imageTransferManager.SaveLastProcessedImage(_directoryPath))
                 new MessageWindow($"마지막 미리보기를 저장했어요!\r\n저장 위치 열기를 눌러서 확인해보세요!").ShowDialog();
+            else
+                new MessageWindow($"결과 미리보기가 없어요...\r\n이미지를 먼저 불러와 주세요!").ShowDialog();
         }
 
         private void OnDecorationPropertyChanged(object? sender, PropertyChangedEventArgs e)

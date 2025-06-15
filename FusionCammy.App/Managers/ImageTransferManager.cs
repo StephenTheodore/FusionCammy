@@ -68,10 +68,7 @@ namespace FusionCammy.App.Managers
         public bool SaveLastProcessedImage(string directoryPath)
         {
             if (_lastProcessedImage is null || _lastProcessedImage.IsDisposed)
-            {
-                new MessageWindow($"결과 미리보기가 없어요...\r\n이미지를 먼저 불러와 주세요!").ShowDialog();
                 return false;
-            }
 
             string imageFilePath = Path.Combine(directoryPath, $"FusionCammy_{DateTime.Now:yyyyMMdd_HHmmss}.png");
             if (!Directory.Exists(directoryPath))
