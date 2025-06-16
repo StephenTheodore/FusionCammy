@@ -23,7 +23,7 @@
 * 운영체제: Windows 10 이상
 * 실행 환경: .NET 8.0 Runtime 필요
 * 하드웨어: USB 웹캠 또는 노트북 내장 카메라 필요
-* 다운로드: [Release](https://github.com/StephenTheodore/FusionCammy/releases/tag/v1.0.0)에서 최신 실행 파일 다운로드 후 실행
+* 다운로드: [Release](https://github.com/StephenTheodore/FusionCammy/releases/tag/v1.0.1)에서 최신 실행 파일 다운로드 후 실행
 
 ---
 
