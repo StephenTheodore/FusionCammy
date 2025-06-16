@@ -1,4 +1,5 @@
-﻿using FusionCammy.Core.Managers;
+using FusionCammy.App.Views;
+using FusionCammy.Core.Managers;
 using FusionCammy.Core.Models;
 using FusionCammy.Core.Services;
 using OpenCvSharp;
@@ -30,8 +31,8 @@ namespace FusionCammy.App.Managers
 
             if (devices.Length == 0)
             {
-                // 카메라가 없을 때
-                throw new InvalidOperationException("No video input devices found.");
+                new MessageWindow($"연결된 카메라를 찾지 못했어요...").ShowDialog();
+                return;
             }
 
             foreach (var device in devices)
