@@ -1,10 +1,8 @@
+using DirectShowLib;
 using FusionCammy.App.Views;
-using FusionCammy.Core.Managers;
 using FusionCammy.Core.Models;
 using FusionCammy.Core.Services;
 using OpenCvSharp;
-using System.Windows.Controls;
-using DirectShowLib;
 using System.Runtime.InteropServices;
 
 namespace FusionCammy.App.Managers
@@ -30,10 +28,7 @@ namespace FusionCammy.App.Managers
             graphBuilder.SetFiltergraph(filterGraph);
 
             if (devices.Length == 0)
-            {
-                new MessageWindow($"연결된 카메라를 찾지 못했어요...").ShowDialog();
                 return;
-            }
 
             foreach (var device in devices)
             {

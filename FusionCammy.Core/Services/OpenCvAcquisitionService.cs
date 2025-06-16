@@ -54,6 +54,9 @@ namespace FusionCammy.Core.Services
 
         public async Task StopLive()
         {
+            if (CameraInfo is null)
+                throw new InvalidOperationException("연결된 카메라가 없어요");
+
             if (_taskCancellation is not null)
                 await _taskCancellation.CancelAsync();
 

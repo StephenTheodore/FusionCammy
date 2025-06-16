@@ -62,6 +62,12 @@ namespace FusionCammy.App.ViewModels
         [RelayCommand]
         private void StartCamera()
         {
+            if (_imageProcessingManager.Cameras.Count == 0)
+            {
+                new MessageWindow("사용 가능한 카메라가 없어요!\r\nUSB 카메라를 연결해 주세요!").ShowDialog();
+                return;
+            }    
+
             _imageProcessingManager.StartLive();
         }
 
@@ -86,6 +92,12 @@ namespace FusionCammy.App.ViewModels
         [RelayCommand]
         private async Task TimedCapture()
         {
+            if (_imageProcessingManager.Cameras.Count == 0)
+            {
+                new MessageWindow("사용 가능한 카메라가 없어요!\r\nUSB 카메라를 연결해 주세요!").ShowDialog();
+                return;
+            }
+
             if (!_imageProcessingManager.IsLive)
             {
                 _imageProcessingManager.StartLive();

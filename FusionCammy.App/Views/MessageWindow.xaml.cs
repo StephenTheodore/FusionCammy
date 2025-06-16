@@ -12,7 +12,8 @@ namespace FusionCammy.App.Views
         public MessageWindow(string message)
         {
             InitializeComponent();
-            Owner = Application.Current.MainWindow;
+            if (Application.Current.MainWindow != this)
+                Owner = Application.Current.MainWindow;
             DataContext = new MessageViewModel(message, Close);
         }
         #endregion

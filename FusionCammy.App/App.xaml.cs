@@ -84,7 +84,6 @@ namespace FusionCammy.App
 
         private static void VerifyConfigurationFile()
         {
-
             if (!File.Exists(configPath))
             {
                 var newConfig = new
