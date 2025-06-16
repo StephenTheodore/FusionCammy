@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="FusionCammy"
     Width="1440"
-    Height="920"
+    Height="980"
     Background="Transparent"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
